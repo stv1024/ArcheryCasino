@@ -3,6 +3,7 @@ import { FollowCameraComp } from "./FollowCameraComp";
 import { ArrowUpdateSystem } from "./ArrowUpdateSystem";
 import { Arrow } from "./Arrow";
 import { Global } from "./Constants";
+import { getUserAccount } from "@decentraland/EthereumController";
 
 //import {RotatorSystem} from "./RotatorSystem";
 
@@ -29,7 +30,7 @@ function start() {
     oldArrowContainer = entity;
   }
 
-  const input = Input.instance
+  const input = Input.instance;
 
   input.subscribe("BUTTON_UP", e => {
     log("Shoot", e);
@@ -43,6 +44,15 @@ function start() {
       curHoldingArrow = null;
     } else {
       spawnArrow();
+    }
+  });
+
+  executeTask(async () => {
+    try {
+      const address = await getUserAccount()
+      log(address)
+    } catch (error) {
+      log('ERR:', error.toString())
     }
   })
 }
