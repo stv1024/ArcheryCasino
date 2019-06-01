@@ -7,7 +7,7 @@ export class AABBCollider {
     entity: Entity;
     center: Vector3;
     size: Vector3 = Vector3.One();
-    offset: Vector3 = Vector3.Zero();
+    //offset: Vector3 = Vector3.Zero();
 
     /**
      * 
@@ -20,7 +20,8 @@ export class AABBCollider {
 
     raycast(ray: Ray, hitInfo: RaycastHit, maxDistance: float = Number.MAX_VALUE): boolean {
         var box = new Box();
-        box.max = this.center.add((this.size.scale(0.5).add(this.offset)));
+        box.min = this.center.add((this.size.scale(-0.5)));
+        box.max = this.center.add((this.size.scale(0.5)));
         var hitPoint = new Vector3();
         var distance = Collision.intersectsRayAndBoxRP(ray, box, hitPoint);
         if (distance >= 0 && distance <= maxDistance) {

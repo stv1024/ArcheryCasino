@@ -1,5 +1,4 @@
 import { FollowCameraSystem } from "./systems/FollowCameraSystem";
-import { FollowCameraComp } from "./components/FollowCameraComp";
 import { ArrowUpdateSystem } from "./systems/ArrowUpdateSystem";
 import { Arrow } from "./components/Arrow";
 import { Global } from "./Constants";
@@ -24,9 +23,8 @@ function start() {
     tra.scale.set(1, 1, 0.02);
     cube.addComponent(new BoxShape());
     cube.getComponent(BoxShape).withCollisions = true;
-    cube.addComponent(new SphereCollider(cube, 1));
-    // cube.addComponent(new AABBCollider(new Vector3(1, 1, 1)));
-//    cube.addComponent(new )
+    // cube.addComponent(new SphereCollider(cube, 1));
+    cube.addComponent(new AABBCollider(cube, new Vector3(1, 1, 0.1)));
     engine.addEntity(cube);
   }
   {
@@ -75,7 +73,7 @@ function spawnArrow() {
   {
     var content = new Entity('Side0');
     content.setParent(arrow);
-    content.addComponent(new Transform({ position: new Vector3(0, 0, 0) }));
+    content.addComponentOrReplace(new Transform({ position: new Vector3(0, 0, -0.4) }));
     var tra = content.getComponent(Transform);
     tra.scale.set(0.01, 0.01, 0.8);
     content.addComponent(new BoxShape());

@@ -1,6 +1,42 @@
 import { Ray } from "./Ray";
 import { Vector3Extension } from "../utilities/MathExtension";
 
+var __static = function (staticClass, list){
+    for (let i = 0; i < list.length-1; i+=2) {
+        const name = list[i];
+		const func = list[i+1];
+        staticClass.func = func;
+        staticClass.func();
+    }
+}
+var MathUtils3D=(function(){
+	/**
+	*创建一个 <code>MathUtils</code> 实例。
+	*/
+	function MathUtils3D(){}
+	//__class(MathUtils3D,'laya.d3.math.MathUtils3D');
+	MathUtils3D.isZero=function(v){
+		return Math.abs(v)< 1e-7;
+	}
+
+	MathUtils3D.nearEqual=function(n1,n2){
+		if (MathUtils3D.isZero(n1-n2))
+			return true;
+		return false;
+	}
+
+	MathUtils3D.fastInvSqrt=function(value){
+		if (MathUtils3D.isZero(value))
+			return value;
+		return 1.0 / Math.sqrt(value);
+	}
+
+	__static(MathUtils3D,
+	['zeroTolerance',function(){return this.zeroTolerance=1e-6;},'MaxValue',function(){return this.MaxValue=3.40282347e+38;},'MinValue',function(){return this.MinValue=-3.40282347e+38;}
+	]);
+	return MathUtils3D;
+})()
+
 export class Box {
     min: Vector3;
     max: Vector3;
@@ -99,7 +135,7 @@ export class Collision {
     static intersectsRayAndBoxRP(ray: Ray, box: Box, out: Vector3): float {
         var distance = Collision.intersectsRayAndBoxRD(ray, box);
         if (distance === -1) {
-            out = Vector3.Zero();
+            Vector3Extension.Vector3CloneTo(Vector3.Zero(), out);
             return distance;
         }
         Collision._tempV30 = ray.direction.scale(distance);
@@ -129,7 +165,7 @@ export class Collision {
     static intersectsRayAndSphereRP(ray: Ray, sphere: { radius: float, center: Vector3 }, out) {
         var distance = Collision.intersectsRayAndSphereRD(ray, sphere);
         if (distance === -1) {
-            out = Vector3.Zero();
+            Vector3Extension.Vector3CloneTo(Vector3.Zero(), out);
             return distance;
         }
         Collision._tempV30 = ray.direction.scale(distance);
