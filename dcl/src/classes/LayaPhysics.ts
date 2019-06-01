@@ -1,11 +1,11 @@
-Physics = {};
+//Physics = {};
 
 var __static = function (staticClass, list){
-    for (let i = 0; i < list.length; i+=2) {
+    for (let i = 0; i < list.length-1; i+=2) {
         const name = list[i];
-        const func = list[i+1];
-        staticClass.name = func;
-        staticClass.name();
+		const func = list[i+1];
+        staticClass.func = func;
+        staticClass.func();
     }
 }
 
@@ -16,7 +16,7 @@ var MathUtils3D=(function(){
 	function MathUtils3D(){}
 	//__class(MathUtils3D,'laya.d3.math.MathUtils3D');
 	MathUtils3D.isZero=function(v){
-		return Math.abs(v)< MathUtils3D.zeroTolerance;
+		return Math.abs(v)< 1e-7;
 	}
 
 	MathUtils3D.nearEqual=function(n1,n2){
@@ -106,24 +106,6 @@ var Matrix4x4=(function(){
 	}
 
 	/**
-	*分解矩阵为平移向量、旋转四元数、缩放向量。
-	*@param translation 平移向量。
-	*@param rotation 旋转四元数。
-	*@param scale 缩放向量。
-	*@return 是否分解成功。
-	*/
-	__proto.decomposeTransRotScale=function(translation,rotation,scale){
-		var rotationMatrix=Matrix4x4._tempMatrix4x4;
-		if (this.decomposeTransRotMatScale(translation,rotationMatrix,scale)){
-			Quaternion.createFromMatrix4x4(rotationMatrix,rotation);
-			return true;
-			}else {
-			rotation.identity();
-			return false;
-		}
-	}
-
-	/**
 	*分解矩阵为平移向量、旋转矩阵、缩放向量。
 	*@param translation 平移向量。
 	*@param rotationMatrix 旋转矩阵。
@@ -160,9 +142,9 @@ var Matrix4x4=(function(){
 		tempRightE[1]=m12 / sX;
 		tempRightE[2]=m13 / sX;
 		var up=Matrix4x4._tempVector2;
-		Vector3.cross(at,tempRight,up);
+		up = Vector3.Cross(at,tempRight);
 		var right=Matrix4x4._tempVector1;
-		Vector3.cross(up,at,right);
+		right = Vector3.Cross(up,at);
 		re[3]=re[7]=re[11]=re[12]=re[13]=re[14]=0;
 		re[15]=1;
 		re[0]=right.x;
@@ -388,10 +370,6 @@ var Matrix4x4=(function(){
 		oe[4]=-s;
 	}
 
-	Matrix4x4.createRotationYawPitchRoll=function(yaw,pitch,roll,result){
-		Quaternion.createFromYawPitchRoll(yaw,pitch,roll,Matrix4x4._tempQuaternion);
-		Matrix4x4.createRotationQuaternion(Matrix4x4._tempQuaternion,result);
-	}
 
 	Matrix4x4.createRotationAxis=function(axis,angle,result){
 		var axisE=axis.elements;
@@ -552,31 +530,6 @@ var Matrix4x4=(function(){
 		oe[15]=1;
 	}
 
-	Matrix4x4.createLookAt=function(eye,target,up,out){
-		var oE=out.elements;
-		var xaxis=Matrix4x4._tempVector0;
-		var yaxis=Matrix4x4._tempVector1;
-		var zaxis=Matrix4x4._tempVector2;
-		Vector3.subtract(eye,target,zaxis);
-		Vector3.normalize(zaxis,zaxis);
-		Vector3.cross(up,zaxis,xaxis);
-		Vector3.normalize(xaxis,xaxis);
-		Vector3.cross(zaxis,xaxis,yaxis);
-		out.identity();
-		oE[0]=xaxis.x;
-		oE[4]=xaxis.y;
-		oE[8]=xaxis.z;
-		oE[1]=yaxis.x;
-		oE[5]=yaxis.y;
-		oE[9]=yaxis.z;
-		oE[2]=zaxis.x;
-		oE[6]=zaxis.y;
-		oE[10]=zaxis.z;
-		oE[12]=-Vector3.dot(xaxis,eye);
-		oE[13]=-Vector3.dot(yaxis,eye);
-		oE[14]=-Vector3.dot(zaxis,eye);
-	}
-
 	Matrix4x4.createPerspective=function(fov,aspect,near,far,out){
 		var oe=out.elements;
 		var f=1.0 / Math.tan(fov / 2),nf=1 / (near-far);
@@ -622,217 +575,7 @@ var Matrix4x4=(function(){
 	return Matrix4x4;
 })()
 
-
 /**
 *<code>BoxCollider</code> 类用于创建盒子碰撞器。
 */
 //class laya.d3.component.physics.BoxCollider extends laya.d3.component.physics.Collider
-var BoxCollider=(function(_super){
-	function BoxCollider(){
-		/**@private */
-		this._size=null;
-		/**@private */
-		this._transformOrientedBoundBox=null;
-		/**中心点 */
-		this.center=null;
-		BoxCollider.__super.call(this);
-		this._needUpdate=false;
-	}
-
-	__class(BoxCollider,'laya.d3.component.physics.BoxCollider',_super);
-	var __proto=BoxCollider.prototype;
-	/**
-	*@private
-	*/
-	__proto._updateCollider=function(){
-		if (this._needUpdate){
-			var obbMat=this._transformOrientedBoundBox.transformation;
-			var transform=(this._owner).transform;
-			var rotation=transform.rotation;
-			var scale=transform.scale;
-			var centerE=this.center.elements;
-			if (centerE[0]===0.0 && centerE[1]===0.0 && centerE[2]===0.0){
-				Matrix4x4.createAffineTransformation(transform.position,rotation,Vector3.ONE,obbMat);
-				}else {
-				Vector3.multiply(this.center,scale,BoxCollider._deviationV3);
-				Vector3.transformQuat(BoxCollider._deviationV3,rotation,BoxCollider._deviationV3);
-				Vector3.add(transform.position,BoxCollider._deviationV3,BoxCollider._deviationV3);
-				Matrix4x4.createAffineTransformation(BoxCollider._deviationV3,rotation,Vector3.ONE,obbMat);
-			}
-			this._transformOrientedBoundBox.transformation=obbMat;
-			var extentsE=this._transformOrientedBoundBox.extents.elements;
-			var sizeE=this._size.elements;
-			var scaleE=scale.elements;
-			extentsE[0]=sizeE[0] *0.5 *scaleE[0];
-			extentsE[1]=sizeE[1] *0.5 *scaleE[1];
-			extentsE[2]=sizeE[2] *0.5 *scaleE[2];
-			this._needUpdate=false;
-		}
-	}
-
-	/**
-	*@private
-	*/
-	__proto._onWorldMatrixChanged=function(){
-		this._needUpdate=true;
-		for (var k in this._runtimeCollisonMap){
-			this._runtimeCollisonTestMap[k]=true;
-			this._runtimeCollisonMap[k]._runtimeCollisonTestMap[this.id]=true;
-		}
-	}
-
-	/**
-	*@inheritDoc
-	*/
-	__proto._initialize=function(owner){
-		laya.d3.component.Component3D.prototype._initialize.call(this,owner);
-		this._transformOrientedBoundBox=new OrientedBoundBox(new Vector3(),new Matrix4x4());
-		this._size=new Vector3();
-		this.center=new Vector3();
-		(owner).transform.on(/*laya.events.Event.WORLDMATRIX_NEEDCHANGE*/"worldmatrixneedchanged",this,this._onWorldMatrixChanged);
-		this._needUpdate=true;
-	}
-
-	/**
-	*@inheritDoc
-	*/
-	__proto._getType=function(){
-		return 1;
-	}
-
-	/**
-	*@inheritDoc
-	*/
-	__proto._collisonTo=function(other){
-		switch (other._getType()){
-			case 0:
-				return this.boundBox.containsSphere((other).boundSphere)!==/*laya.d3.math.ContainmentType.Disjoint*/0;
-				break ;
-			case 1:
-				return this.boundBox.containsOrientedBoundBox((other).boundBox)!==/*laya.d3.math.ContainmentType.Disjoint*/0;
-				break ;
-			case 2:;
-				var meshCollider=other;
-				if (this.boundBox.containsBoundBox(meshCollider._boundBox)!==/*laya.d3.math.ContainmentType.Disjoint*/0){
-					var positions=(other).mesh._positions;
-					for (var i=0,n=positions.length;i < n;i++){
-						if (this.boundBox.containsPoint(positions[i])===/*laya.d3.math.ContainmentType.Contains*/1)
-							return true
-					}
-					return false;
-					}else {
-					return false;
-				}
-				break ;
-			default :
-				throw new Error("BoxCollider:unknown collider type.");
-			}
-	}
-
-	/**
-	*@inheritDoc
-	*/
-	__proto._cloneTo=function(dest){
-		var destBoxCollider=dest;
-		var destSize=destBoxCollider.size;
-		this.size.cloneTo(destSize);
-		destBoxCollider.size=destSize;
-		this.center.cloneTo(destBoxCollider.center);
-	}
-
-	/**
-	*@inheritDoc
-	*/
-	__proto.raycast=function(ray,hitInfo,maxDistance){
-		(maxDistance===void 0)&& (maxDistance=1.79e+308);
-		this._updateCollider();
-		var distance=this._transformOrientedBoundBox.intersectsRay(ray,hitInfo.position);
-		if (distance!==-1 && distance <=maxDistance){
-			hitInfo.distance=distance;
-			hitInfo.sprite3D=this._owner;
-			return true;
-			}else {
-			hitInfo.distance=-1;
-			hitInfo.sprite3D=null;
-			return false;
-		}
-	}
-
-	/**
-	*从AABB碰撞盒设置center和Size。
-	*@param boundBox 碰撞盒。
-	*/
-	__proto.setFromBoundBox=function(boundBox){
-		OrientedBoundBox.createByBoundBox(boundBox,this._transformOrientedBoundBox);
-		var extents=this._transformOrientedBoundBox.extents;
-		this._size=new Vector3(extents.x *2,extents.y *2,extents.z *2);
-		this.center=new Vector3();
-		Vector3.add(boundBox.min,boundBox.max,this.center);
-		Vector3.scale(this.center,0.5,this.center);
-		this._needUpdate=true;
-	}
-
-	/**
-	*获取包围盒子,只读,不允许修改。
-	*@return 包围球。
-	*/
-	__getset(0,__proto,'boundBox',function(){
-		this._updateCollider();
-		return this._transformOrientedBoundBox;
-	});
-
-	/**
-	*设置盒子碰撞器长宽高的一半。
-	*@param 长宽高的一半。
-	*/
-	/**
-	*获取盒子碰撞器长宽高的一半。
-	*@return 长宽高的一半。
-	*/
-	__getset(0,__proto,'size',function(){
-		return this._size;
-		},function(value){
-		this._size=value;
-		this._needUpdate=true;
-	});
-
-	__static(BoxCollider,
-	['_deviationV3',function(){return this._deviationV3=new Vector3();},'_obbCenterV3',function(){return this._obbCenterV3=new Vector3();}
-	]);
-	return BoxCollider;
-})(Collider)
-
-
-Physics.rayCast=function(ray,outHitInfo,distance,layer){
-    (distance===void 0)&& (distance=1.79e+308);
-    (layer===void 0)&& (layer=0);
-    Physics._outHitAllInfo.length=0;
-    var colliders=Layer.getLayerByNumber(layer)._colliders;
-    for (var i=0,n=colliders.length;i < n;i++){
-        var collider=colliders[i];
-        if (collider.enable){
-            collider.raycast(ray,Physics._outHitInfo,distance);
-            if (Physics._outHitInfo.distance!==-1 && Physics._outHitInfo.distance <=distance){
-                var outHit=new RaycastHit();
-                Physics._outHitInfo.cloneTo(outHit);
-                Physics._outHitAllInfo.push(outHit);
-            }
-        }
-    }
-    if (Physics._outHitAllInfo.length==0){
-        outHitInfo.sprite3D=null;
-        outHitInfo.distance=-1;
-        return;
-    };
-    var minDistance=Number.MAX_VALUE;
-    var minIndex=0;
-    for (var j=0;j < Physics._outHitAllInfo.length;j++){
-        if (Physics._outHitAllInfo[j].distance < minDistance){
-            minDistance=Physics._outHitAllInfo[j].distance;
-            minIndex=j;
-        }
-    }
-    Physics._outHitAllInfo[minIndex].cloneTo(outHitInfo);
-}
-
-

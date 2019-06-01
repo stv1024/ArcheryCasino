@@ -1,4 +1,4 @@
-import { FollowCameraComp } from "./FollowCameraComp";
+import { FollowCameraComp } from "../components/FollowCameraComp";
 
 export class FollowCameraSystem {
     group = engine.getComponentGroup(FollowCameraComp)

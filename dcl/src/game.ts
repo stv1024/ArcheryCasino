@@ -1,9 +1,12 @@
-import { FollowCameraSystem } from "./FollowCameraSystem";
-import { FollowCameraComp } from "./FollowCameraComp";
-import { ArrowUpdateSystem } from "./ArrowUpdateSystem";
-import { Arrow } from "./Arrow";
+import { FollowCameraSystem } from "./systems/FollowCameraSystem";
+import { FollowCameraComp } from "./components/FollowCameraComp";
+import { ArrowUpdateSystem } from "./systems/ArrowUpdateSystem";
+import { Arrow } from "./components/Arrow";
 import { Global } from "./Constants";
 import { getUserAccount } from "@decentraland/EthereumController";
+import { AABBCollider } from "./components/AABBCollider";
+import { ColliderUpdateSystem } from "./systems/ColliderUpdateSystem";
+import { SphereCollider } from "./components/SphereCollider";
 
 //import {RotatorSystem} from "./RotatorSystem";
 
@@ -21,6 +24,9 @@ function start() {
     tra.scale.set(1, 1, 0.02);
     cube.addComponent(new BoxShape());
     cube.getComponent(BoxShape).withCollisions = true;
+    cube.addComponent(new SphereCollider(cube, 1));
+    // cube.addComponent(new AABBCollider(new Vector3(1, 1, 1)));
+//    cube.addComponent(new )
     engine.addEntity(cube);
   }
   {
@@ -38,7 +44,7 @@ function start() {
       var arrow = curHoldingArrow.getComponent(Arrow);
       var tra = curHoldingArrow.getComponent(Transform);
       curHoldingArrow.setParent(oldArrowContainer);
-      
+
       arrow.state = 1;
       arrow.velocity = Vector3.Forward().rotate(tra.rotation).scale(15);
       curHoldingArrow = null;
@@ -76,6 +82,7 @@ function spawnArrow() {
   }
 }
 
+engine.addSystem(new ColliderUpdateSystem());
 engine.addSystem(new FollowCameraSystem());
 engine.addSystem(new ArrowUpdateSystem());
 
