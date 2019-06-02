@@ -2,7 +2,7 @@
 import { Ray } from "../classes/Ray";
 import { RaycastHit } from "../classes/RaycastHit";
 
-@Component("BBBCollider")
+@Component("Collider")
 /**
  * Don't use!
  */

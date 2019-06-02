@@ -2,7 +2,7 @@ import { Ray } from "../classes/Ray";
 import { RaycastHit } from "../classes/RaycastHit";
 import { Collision } from "../classes/Collision";
 
-@Component("SphereCollider")
+@Component("Collider")
 export class SphereCollider {
     entity: Entity;
     center: Vector3;

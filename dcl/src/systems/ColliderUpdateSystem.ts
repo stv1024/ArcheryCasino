@@ -8,14 +8,18 @@ export class ColliderUpdateSystem {
 
     update(dt: number) {
         for (const entity of this.group0.entities) {
-            const collider = entity.getComponent(AABBCollider);
-            var tra = entity.getComponent(Transform);
-            collider.center = tra.position;
+            const collider = entity.getComponentOrNull(AABBCollider);
+            if (collider) {
+                var tra = entity.getComponent(Transform);
+                collider.center = tra.position;
+            }
         }
         for (const entity of this.group1.entities) {
-            const collider = entity.getComponent(SphereCollider);
-            var tra = entity.getComponent(Transform);
-            collider.center = tra.position;
+            const collider = entity.getComponentOrNull(SphereCollider);
+            if (collider) {
+                var tra = entity.getComponent(Transform);
+                collider.center = tra.position;
+            }
         }
     }
 }

@@ -2,7 +2,7 @@ import { Ray } from "../classes/Ray";
 import { RaycastHit } from "../classes/RaycastHit";
 import { Collision, Box } from "../classes/Collision";
 
-@Component("AABBCollider")
+@Component("Collider")
 export class AABBCollider {
     entity: Entity;
     center: Vector3;
