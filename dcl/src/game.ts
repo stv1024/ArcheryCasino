@@ -17,10 +17,23 @@ var followCameraContainer: Entity;
 
 function start() {
     {
-        var entity = new Entity('Scene');
-        entity.addComponent(new Transform({ position: new Vector3(0, 0, 0), rotation: Quaternion.Euler(0, 180, 0), scale: new Vector3().setAll(83) }));
-        entity.addComponent(new GLTFShape('models/archery.gltf'));
+        // var entity = new Entity('Scene');
+        // entity.addComponent(new Transform({ position: new Vector3(0, 0, 0), rotation: Quaternion.Euler(0, 180, 0), scale: new Vector3().setAll(83) }));
+        // entity.addComponent(new GLTFShape('models/archery.gltf'));
+        // engine.addEntity(entity);
+    }
+    {
+        var entity = new Entity('Bow');
+        entity.addComponent(new Transform({ position: new Vector3(3, 1, 3), rotation: Quaternion.Euler(0, 0, 0), scale: new Vector3().setAll(0.01) }));
+        entity.addComponent(new GLTFShape('models/bow/gongjiandonghua.gltf'));
         engine.addEntity(entity);
+
+        let animator = new Animator();
+        entity.addComponent(animator);
+        const clip = new AnimationState("shoot");
+        animator.addClip(clip);
+        clip.looping = true;
+        clip.play();
     }
     {
         var cube = new Entity('Target');
@@ -83,7 +96,7 @@ function start() {
             }
         }
     }
-    
+
     // Create screenspace component
     const canvas = new UICanvas()
 
