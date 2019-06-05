@@ -16,24 +16,14 @@ var oldArrowContainer: Entity;
 var followCameraContainer: Entity;
 
 function start() {
+    var root = new Entity('Root');
+    root.addComponent(new Transform({ position: new Vector3(0, 0, 0), rotation: Quaternion.Euler(0, 0, 0), scale: new Vector3().setAll(1) })); //You can change the direction to fit your lands.
+    engine.addEntity(root);
     {
-        // var entity = new Entity('Scene');
-        // entity.addComponent(new Transform({ position: new Vector3(0, 0, 0), rotation: Quaternion.Euler(0, 180, 0), scale: new Vector3().setAll(83) }));
-        // entity.addComponent(new GLTFShape('models/archery.gltf'));
-        // engine.addEntity(entity);
-    }
-    {
-        var entity = new Entity('Bow');
-        entity.addComponent(new Transform({ position: new Vector3(3, 1, 3), rotation: Quaternion.Euler(0, 0, 0), scale: new Vector3().setAll(0.01) }));
-        entity.addComponent(new GLTFShape('models/bow/gongjiandonghua.gltf'));
-        engine.addEntity(entity);
-
-        let animator = new Animator();
-        entity.addComponent(animator);
-        const clip = new AnimationState("shoot");
-        animator.addClip(clip);
-        clip.looping = true;
-        clip.play();
+        var archeryScene = new Entity('Scene');
+        archeryScene.addComponent(new Transform({ position: new Vector3(4, 0, 1), rotation: Quaternion.Euler(0, 180, 0), scale: new Vector3().setAll(2.54) }));
+        archeryScene.addComponent(new GLTFShape('models/scene/sence.gltf'));
+        archeryScene.setParent(root);
     }
     {
         var cube = new Entity('Target');
@@ -60,15 +50,28 @@ function start() {
     {
         let entity = new Entity('OldArrowContainer');
         entity.addComponent(new Transform());
-        engine.addEntity(entity);
+        entity.setParent(root);
         oldArrowContainer = entity;
     }
     {
         let entity = new Entity('FollowCamera');
         entity.addComponent(new Transform());
-        entity.addComponent(new FollowCameraComp(0.4));
-        engine.addEntity(entity);
+        entity.addComponent(new FollowCameraComp());
+        entity.setParent(root);
         followCameraContainer = entity;
+        {
+            let bow = new Entity('Bow');
+            bow.addComponent(new Transform({ position: new Vector3(0, 0, 5), rotation: Quaternion.Euler(0, 180, 0), scale: new Vector3().setAll(0.01) }));
+            bow.addComponent(new GLTFShape('models/shejian/shejian.babylon.gltf'));
+            bow.setParent(followCameraContainer);
+
+            let animator = new Animator();
+            entity.addComponent(animator);
+            //const clip = new AnimationState("shoot");
+            //animator.addClip(clip);
+            //clip.looping = true;
+            //clip.play();
+        }
         {
             let entity = new Entity('AimingUI');
             entity.setParent(followCameraContainer);
