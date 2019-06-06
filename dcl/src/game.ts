@@ -10,6 +10,7 @@ import { AimingSystem } from "./systems/AimingSystem";
 import { FollowCameraComp } from "./components/FollowCameraComp";
 import { AimingUI } from "./components/AimingUI";
 import { Materials } from "./classes/materials";
+import { TargetManageSystem } from "./systems/TargetManageSystem";
 
 var curHoldingArrow: Entity;
 var oldArrowContainer: Entity;
@@ -18,6 +19,7 @@ var followCameraContainer: Entity;
 function start() {
     var root = new Entity('Root');
     root.addComponent(new Transform({ position: new Vector3(0, 0, 0), rotation: Quaternion.Euler(0, 0, 0), scale: new Vector3().setAll(1) })); //You can change the direction to fit your lands.
+    Global.root = root;
     engine.addEntity(root);
     {
         var archeryScene = new Entity('Scene');
@@ -157,3 +159,4 @@ engine.addSystem(new ColliderUpdateSystem());
 engine.addSystem(new FollowCameraSystem());
 engine.addSystem(new ArrowUpdateSystem());
 engine.addSystem(new AimingSystem());
+engine.addSystem(new TargetManageSystem());
