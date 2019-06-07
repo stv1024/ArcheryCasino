@@ -1,3 +1,7 @@
+import { Rabbit } from "./AIs/Rabbit";
+import { Pig } from "./AIs/Pig";
+import { Bird } from "./AIs/Bird";
+
 export const TargetInfoTable: any = {};
 
 TargetInfoTable[1] = {
@@ -8,6 +12,7 @@ TargetInfoTable[1] = {
     radius: 0.3,
     speed: 0.4,
     maxCount: 5,
+    ai: Rabbit,
     //special
     jumpSpeed: 1
 };
@@ -17,8 +22,9 @@ TargetInfoTable[2] = {
     max: new Vector3(15, 0, 31),
     output: 2,
     radius: 0.7,
-    speed: 0.6,
+    speed: 2.0,
     maxCount: 5,
+    ai: Pig,
     //special
     jumpSpeed: 1
 };
@@ -30,6 +36,7 @@ TargetInfoTable[3] = {
     radius: 0.1,
     speed: 1,
     maxCount: 5,
+    ai: Bird,
     //special
     jumpSpeed: 1
 };

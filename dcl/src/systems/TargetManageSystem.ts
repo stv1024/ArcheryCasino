@@ -36,8 +36,8 @@ export class TargetManageSystem {
         for (let entity of this.group.entities) {
             let tra = entity.getComponent(Transform);
             let target = entity.getComponent(Target);
-            let info = target.info;
-            
+            let ai = target.ai;
+            if (ai) { ai.update(dt); }
         }
     }
 
@@ -47,7 +47,7 @@ export class TargetManageSystem {
         log('createTargetEntity', id, info)
         if (!info) return null;
         let entity = new Entity(info.name);
-        engine.addEntity(entity);
+        entity.setParent(Global.root);
         this.aliveTargetsArray[id].push(entity);
         let pos = new Vector3(
             MathExtension.randomRange(info.min.x, info.max.x),
@@ -62,7 +62,7 @@ export class TargetManageSystem {
             let shape = art.addComponent(new SphereShape());
             shape.withCollisions = true;
         }
-        entity.addComponent(new Target());
+        entity.addComponent(new Target(id, tra));
         entity.addComponent(new SphereCollider(info.radius)).center = new Vector3(0, info.radius * 0.5);
     }
 }
