@@ -14,7 +14,7 @@ export class Bird extends BaseAI {
     constructor() {
         super();
         let radius = MathExtension.randomRange(3, 7.5);
-        this.orbitCenter = new Vector3(MathExtension.randomRange(radius, 16 - radius), MathExtension.randomRange(3 + radius, 27 - radius), MathExtension.randomRange(10 + radius, 30 - radius));
+        this.orbitCenter = new Vector3(MathExtension.randomRange(radius, 16 - radius), MathExtension.randomRange(2 + radius, 20 - radius), MathExtension.randomRange(10 + radius, 30 - radius));
         this.orbitRadius = radius;
         this.orbitNormal = Vector3Extension.RandomOnUnitSphere();
         this.orbitOmega = MathExtension.randomRange(0.5, 1) * (Math.random() > 0.5 ? 1 : -1);
