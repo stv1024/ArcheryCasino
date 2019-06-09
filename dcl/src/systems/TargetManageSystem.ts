@@ -37,7 +37,10 @@ export class TargetManageSystem {
             let tra = entity.getComponent(Transform);
             let target = entity.getComponent(Target);
             let ai = target.ai;
-            if (ai) { ai.update(dt); }
+            if (ai) {
+                ai.update(dt);
+                tra.rotation = Quaternion.FromToRotation(Vector3.Forward(), ai.direction);
+            }
         }
     }
 

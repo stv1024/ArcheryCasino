@@ -2,7 +2,7 @@ import { Target } from "../../components/Target";
 
 export abstract class BaseAI {
     public target: Target;
-    direction: Vector3;
+    direction: Vector3 = Vector3.Forward();
     array = ['x', 'y', 'z'];
     public update(dt: number) { };
 

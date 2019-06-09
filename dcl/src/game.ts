@@ -23,8 +23,8 @@ function start() {
     engine.addEntity(root);
     {
         var archeryScene = new Entity('Scene');
-        archeryScene.addComponent(new Transform({ position: new Vector3(4, 0, 1), rotation: Quaternion.Euler(0, 180, 0), scale: new Vector3().setAll(2.54) }));
-        archeryScene.addComponent(new GLTFShape('models/scene/sence.gltf'));
+        archeryScene.addComponent(new Transform({ position: new Vector3(0, 0, 0), rotation: Quaternion.Euler(0, 180, 0), scale: new Vector3().setAll(2.54) }));
+        archeryScene.addComponent(new GLTFShape('models/scene/scene.gltf'));
         archeryScene.setParent(root);
     }
     {
