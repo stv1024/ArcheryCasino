@@ -11,10 +11,11 @@ TargetInfoTable[1] = {
     output: 1,
     radius: 0.3,
     speed: 0.4,
-    maxCount: 5,
+    maxCount: 1,
     ai: Rabbit,
+    scale: 0.008,
     //special
-    jumpSpeed: 1
+    jumpSpeed: 5
 };
 TargetInfoTable[2] = {
     name: "Pig",
@@ -23,10 +24,13 @@ TargetInfoTable[2] = {
     output: 2,
     radius: 0.7,
     speed: 2.0,
-    maxCount: 5,
+    maxCount: 2,
     ai: Pig,
+    model: new GLTFShape('models/pig/zhudonghua.gltf'),
+    scale: 0.005,
+    offset: new Vector3(0, -0.3, -0.55),
+    animClips: ['Idle', 'Die', 'Walk', 'Spawn'],
     //special
-    jumpSpeed: 1
 };
 TargetInfoTable[3] = {
     name: "Bird",
@@ -35,8 +39,8 @@ TargetInfoTable[3] = {
     output: 3,
     radius: 0.1,
     speed: 1,
-    maxCount: 5,
+    maxCount: 1,
     ai: Bird,
+    scale: 0.008,
     //special
-    jumpSpeed: 1
 };

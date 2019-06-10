@@ -58,14 +58,35 @@ export class TargetManageSystem {
             MathExtension.randomRange(info.min.z, info.max.z));
         let rot = Quaternion.Euler(0, MathExtension.randomRange(0, 360), 0);
         let tra = entity.addComponent(new Transform({ position: pos, rotation: rot }));
+        const target = entity.addComponent(new Target(id, tra));
         {
-            let art = new Entity(info.name + '_art');
-            art.addComponent(new Transform({ position: new Vector3(0, info.radius * 0.5), scale: new Vector3().setAll(info.radius) }));
-            art.setParent(entity);
-            let shape = art.addComponent(new SphereShape());
-            shape.withCollisions = true;
+            let model = info.model;
+            if (model) {
+                let art = new Entity(info.name + '_art');
+                let tra = art.addComponent(new Transform({ position: new Vector3(0, info.radius * 0.5, 0).add(info.offset), scale: new Vector3().setAll(info.scale) }));
+                art.setParent(entity);
+                const shape = art.addComponent(model);
+
+                let animator = new Animator();
+                art.addComponent(animator);
+                info.animClips.forEach((animClipName: string) => {
+                    const clip = new AnimationState(animClipName);
+                    animator.addClip(clip);
+                    target.animationStates[animClipName] = clip;
+                });
+                const walk : AnimationState = target.animationStates['Walk'];
+                walk.looping = true;
+                walk.play();
+            }
+            if (true) {
+                let block = new Entity(info.name + '_block');
+                block.addComponent(new Transform({ position: new Vector3(0, info.radius * 0.5, 0), scale: new Vector3().setAll(info.radius) }));
+                block.setParent(entity);
+                const gizmo = block.addComponent(new SphereShape());
+                gizmo.withCollisions = true;
+                gizmo.visible = false;
+            }
         }
-        entity.addComponent(new Target(id, tra));
-        entity.addComponent(new SphereCollider(info.radius)).center = new Vector3(0, info.radius * 0.5);
+        entity.addComponent(new SphereCollider(info.radius)).center = new Vector3(0, info.radius * 0.5, 0);
     }
 }

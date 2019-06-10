@@ -9,6 +9,7 @@ export class Target {
 
     public ai: BaseAI;
 
+    public animationStates = {};
     /**
      *
      */

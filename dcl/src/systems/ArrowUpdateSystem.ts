@@ -1,5 +1,5 @@
 import { Arrow } from "../components/Arrow";
-import { g, Global, arrowLocalPos } from "../Constants";
+import { arrowLocalPos, arrowGravity } from "../Constants";
 import { Physics } from "../classes/Physics";
 import { Ray } from "../classes/Ray";
 import { RaycastHit } from "../classes/RaycastHit";
@@ -24,7 +24,7 @@ export class ArrowUpdateSystem {
                 let lastPos = tra.position.clone();
                 tra.position = tra.position.add(arrow.velocity.scale(dt));
                 if (tra.position.y >= -1) {
-                    arrow.velocity = arrow.velocity.add(new Vector3(0, -g, 0).scale(dt));
+                    arrow.velocity = arrow.velocity.add(new Vector3(0, -arrowGravity, 0).scale(dt));
                     tra.rotation = Quaternion.FromToRotation(Vector3.Forward(), arrow.velocity.clone());
                     let hitInfo = new RaycastHit();
                     let hit = Physics.raycast(new Ray(lastPos, tra.position.subtract(lastPos)), hitInfo, tra.position.subtract(lastPos).length());
