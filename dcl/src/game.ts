@@ -105,9 +105,20 @@ function start() {
     // Create screenspace component
     const canvas = new UICanvas()
 
-    // Create a textShape component, setting the canvas as parent
     const text = new UIText(canvas)
     text.value = 'Hello world!'
+
+    const rect = new UIContainerRect(canvas)
+    rect.width = 500
+    rect.height = '80%'
+    rect.color = Color4.Blue()
+    rect.opacity = 0.5
+
+    const pnlBottom = new UIContainerRect(canvas);
+    pnlBottom.vAlign = 'bottom';
+    pnlBottom.color = Color4.White();
+    pnlBottom.positionY = 15;
+
 
     const input = Input.instance;
 
