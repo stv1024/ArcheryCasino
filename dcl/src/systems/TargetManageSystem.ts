@@ -1,6 +1,3 @@
-import { Physics } from "../classes/Physics";
-import { Ray } from "../classes/Ray";
-import { RaycastHit } from "../classes/RaycastHit";
 import { Global } from "../Constants";
 import { Target } from "../components/Target";
 import { TargetInfoTable } from "../classes/TargetInfoTable";
@@ -14,7 +11,6 @@ export class TargetManageSystem {
 
     constructor() {
         for (const id in TargetInfoTable) {
-            log('key', id);
             if (TargetInfoTable.hasOwnProperty(id)) {
                 this.aliveTargetsArray[id] = [];
             }

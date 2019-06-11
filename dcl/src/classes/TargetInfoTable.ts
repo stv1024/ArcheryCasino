@@ -11,7 +11,7 @@ TargetInfoTable[1] = {
     output: 1,
     radius: 0.3,
     speed: 0.4,
-    maxCount: 1,
+    maxCount: 0,
     ai: Rabbit,
     scale: 0.008,
     //special
@@ -24,7 +24,7 @@ TargetInfoTable[2] = {
     output: 2,
     radius: 0.7,
     speed: 2.0,
-    maxCount: 2,
+    maxCount: 4,
     ai: Pig,
     model: new GLTFShape('models/pig/zhudonghua.gltf'),
     scale: 0.005,
@@ -41,6 +41,9 @@ TargetInfoTable[3] = {
     speed: 1,
     maxCount: 1,
     ai: Bird,
-    scale: 0.008,
+    model: new GLTFShape('models/bird/niao.gltf'),
+    scale: 0.005,
+    offset: new Vector3(0, -0.3, -0.55),
+    animClips: ['Idle', 'Die', 'Walk', 'Spawn'],
     //special
 };

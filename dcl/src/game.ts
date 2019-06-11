@@ -108,16 +108,21 @@ function start() {
     const text = new UIText(canvas)
     text.value = 'Hello world!'
 
-    const rect = new UIContainerRect(canvas)
-    rect.width = 500
-    rect.height = '80%'
-    rect.color = Color4.Blue()
-    rect.opacity = 0.5
+    // const rect = new UIContainerRect(canvas)
+    // rect.width = 500
+    // rect.height = '80%'
+    // rect.color = Color4.Blue()
+    // rect.opacity = 0.5
 
     const pnlBottom = new UIContainerRect(canvas);
     pnlBottom.vAlign = 'bottom';
     pnlBottom.color = Color4.White();
     pnlBottom.positionY = 15;
+
+
+    root.addComponent(new OnClick(e => {
+        log("Click distance: ")
+    }));
 
 
     const input = Input.instance;
@@ -145,6 +150,18 @@ function start() {
             log('ERR:', error.toString())
         }
     })
+
+    class ButtonChecker {
+        update() {
+          if (input.state[Pointer.PRIMARY].BUTTON_DOWN) {
+            log("button A down")
+          } else {
+            log("button A up")
+          }
+        }
+      }
+      
+      engine.addSystem(new ButtonChecker())
 }
 start();
 
