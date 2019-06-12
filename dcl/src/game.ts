@@ -150,18 +150,6 @@ function start() {
             log('ERR:', error.toString())
         }
     })
-
-    class ButtonChecker {
-        update() {
-          if (input.state[Pointer.PRIMARY].BUTTON_DOWN) {
-            log("button A down")
-          } else {
-            log("button A up")
-          }
-        }
-      }
-      
-      engine.addSystem(new ButtonChecker())
 }
 start();
 

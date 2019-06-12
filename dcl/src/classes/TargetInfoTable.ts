@@ -9,11 +9,14 @@ TargetInfoTable[1] = {
     min: new Vector3(1, 0, 5),
     max: new Vector3(15, 0, 26),
     output: 1,
-    radius: 0.3,
+    radius: 0.45,
     speed: 0.4,
-    maxCount: 0,
+    maxCount: 2,
     ai: Rabbit,
-    scale: 0.008,
+    model: new GLTFShape('models/targets/tuzi.gltf'),
+    scale: 0.005,
+    offset: new Vector3(0, 0, -0.2),
+    animClips: ['Idle', 'Die', 'Walk', 'Spawn'],
     //special
     jumpSpeed: 5
 };
@@ -24,11 +27,11 @@ TargetInfoTable[2] = {
     output: 2,
     radius: 0.7,
     speed: 2.0,
-    maxCount: 4,
+    maxCount: 2,
     ai: Pig,
-    model: new GLTFShape('models/pig/zhudonghua.gltf'),
+    model: new GLTFShape('models/targets/zhu.gltf'),
     scale: 0.005,
-    offset: new Vector3(0, -0.3, -0.55),
+    offset: new Vector3(0, 0, -0.55),
     animClips: ['Idle', 'Die', 'Walk', 'Spawn'],
     //special
 };
@@ -37,13 +40,13 @@ TargetInfoTable[3] = {
     min: new Vector3(1, 1, 12),
     max: new Vector3(15, 24, 31),
     output: 3,
-    radius: 0.1,
+    radius: 0.3,
     speed: 1,
-    maxCount: 1,
+    maxCount: 2,
     ai: Bird,
-    model: new GLTFShape('models/bird/niao.gltf'),
+    model: new GLTFShape('models/targets/niao.gltf'),
     scale: 0.005,
-    offset: new Vector3(0, -0.3, -0.55),
+    offset: new Vector3(0, 0, 0),
     animClips: ['Idle', 'Die', 'Walk', 'Spawn'],
     //special
 };

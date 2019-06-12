@@ -59,7 +59,7 @@ export class TargetManageSystem {
             let model = info.model;
             if (model) {
                 let art = new Entity(info.name + '_art');
-                let tra = art.addComponent(new Transform({ position: new Vector3(0, info.radius * 0.5, 0).add(info.offset), scale: new Vector3().setAll(info.scale) }));
+                let tra = art.addComponent(new Transform({ position: new Vector3(0, 0, 0).add(info.offset), scale: new Vector3().setAll(info.scale) }));
                 art.setParent(entity);
                 const shape = art.addComponent(model);
 
@@ -80,7 +80,7 @@ export class TargetManageSystem {
                 block.setParent(entity);
                 const gizmo = block.addComponent(new SphereShape());
                 gizmo.withCollisions = true;
-                gizmo.visible = false;
+                gizmo.visible = true;
             }
         }
         entity.addComponent(new SphereCollider(info.radius)).center = new Vector3(0, info.radius * 0.5, 0);
