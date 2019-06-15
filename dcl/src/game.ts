@@ -11,22 +11,28 @@ import { FollowCameraComp } from "./components/FollowCameraComp";
 import { AimingUI } from "./components/AimingUI";
 import { Materials } from "./classes/materials";
 import { TargetManageSystem } from "./systems/TargetManageSystem";
+import { Rules, Round } from "./utilities/Rules";
 
 var curHoldingArrow: Entity;
 var oldArrowContainer: Entity;
 var followCameraContainer: Entity;
+
+var curRound: Round;
 
 function start() {
     var root = new Entity('Root');
     root.addComponent(new Transform({ position: new Vector3(0, 0, 0), rotation: Quaternion.Euler(0, 0, 0), scale: new Vector3().setAll(1) })); //You can change the direction to fit your lands.
     Global.root = root;
     engine.addEntity(root);
-    {
-        var archeryScene = new Entity('Scene');
-        archeryScene.addComponent(new Transform({ position: new Vector3(0, 0, 0), rotation: Quaternion.Euler(0, 180, 0), scale: new Vector3().setAll(2.13) }));
-        archeryScene.addComponent(new GLTFShape('models/scene/scene.gltf'));
-        archeryScene.setParent(root);
-    }
+    var archeryScene = new Entity('Scene');
+    archeryScene.addComponent(new Transform({ position: new Vector3(0, 0, 0), rotation: Quaternion.Euler(0, 180, 0), scale: new Vector3().setAll(2.13) }));
+    archeryScene.addComponent(new GLTFShape('models/scene/scene.gltf'));
+    let anmtr = archeryScene.addComponent(new Animator());
+    let animSceneButtonDown = new AnimationState('ButtonDOWN');
+    animSceneButtonDown.looping = false;
+    anmtr.addClip(animSceneButtonDown);
+
+    archeryScene.setParent(root);
     {
         var cube = new Entity('Target');
         cube.addComponent(new Transform({ position: new Vector3(6, 1.5, 16) }));
@@ -102,6 +108,20 @@ function start() {
         }
     }
 
+    {
+        const myEntity = new Entity();
+        myEntity.addComponent(new Transform({ position: new Vector3(9.55, 1.1, 1.6), rotation: Quaternion.Euler(-70, 180, 0), scale: new Vector3(1.6, 0.6, 0.2) }))
+        myEntity.addComponent(new BoxShape())
+        myEntity.setParent(root);
+        myEntity.addComponent(
+            new OnClick(e => {
+                log("Click : " + e)
+                curRound = new Round();
+                animSceneButtonDown.play();
+            })
+        )
+    }
+
     // Create screenspace component
     const canvas = new UICanvas()
 
@@ -118,12 +138,6 @@ function start() {
     pnlBottom.vAlign = 'bottom';
     pnlBottom.color = Color4.White();
     pnlBottom.positionY = 15;
-
-
-    root.addComponent(new OnClick(e => {
-        log("Click distance: ")
-    }));
-
 
     const input = Input.instance;
 
@@ -170,9 +184,10 @@ function spawnArrow() {
         content.addComponent(new BoxShape());
     }
 }
-
+/*
 engine.addSystem(new ColliderUpdateSystem());
 engine.addSystem(new FollowCameraSystem());
 engine.addSystem(new ArrowUpdateSystem());
 engine.addSystem(new AimingSystem());
 engine.addSystem(new TargetManageSystem());
+*/

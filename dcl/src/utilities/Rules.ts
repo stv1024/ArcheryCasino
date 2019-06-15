@@ -22,7 +22,7 @@ export class Rules {
         let quest2 = new Quest(); //4|0~1B
         {
             let b = Math.random() < 0.25 ? 1 : 0;
-            let r = Math.floor(Math.pow(Math.random(), 4) * (4.49 - b));
+            let r = Math.floor(Math.pow(Math.random(), 2) * (4.49 - b));
             let p = 4 - b - r;
             quest2.list[1] = r;
             quest2.list[2] = p;
@@ -30,8 +30,8 @@ export class Rules {
         }
         let quest3 = new Quest(); //7|0~3B
         {
-            let b = Math.floor(Math.pow(Math.random(), 5) * 4 + 0.2);
-            let r = Math.floor(Math.pow(Math.random(), 4) * (7.49 - b));
+            let b = Math.floor(Math.pow(Math.random(), 4) * 4 + 0.2);
+            let r = Math.floor(Math.pow(Math.random(), 3) * (7.49 - b));
             let p = 7 - b - r;
             quest3.list[1] = r;
             quest3.list[2] = p;
@@ -44,16 +44,25 @@ export class Rules {
 
 export class Quest {
     list = {
-        1:0,
-        2:0,
-        3:0,
-        4:0
+        1: 0,
+        2: 0,
+        3: 0
     };
 }
 
 export class Round {
     public arrowCount: number = 10;
-    public originQuest: Quest;
-    public leftQuest: Quest;
+    public originQuest: Quest[];
+    public bag: {};
     public roundReward: number = 0;
+
+    /**
+     *
+     */
+    constructor() {
+        this.originQuest = Rules.getRandomQuests();
+        this.bag = { 1: 0, 2: 0, 3: 0 };
+
+        log(this.originQuest);
+    }
 }
