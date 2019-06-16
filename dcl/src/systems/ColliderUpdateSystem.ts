@@ -19,6 +19,7 @@ export class ColliderUpdateSystem {
             if (collider) {
                 var tra = entity.getComponent(Transform);
                 collider.center = tra.position;
+                //log('coll update', collider.center, collider.radius)
             }
         }
     }

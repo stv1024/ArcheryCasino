@@ -3,6 +3,8 @@ import { arrowLocalPos, arrowGravity } from "../Constants";
 import { Physics } from "../classes/Physics";
 import { Ray } from "../classes/Ray";
 import { RaycastHit } from "../classes/RaycastHit";
+import { Target } from "../components/Target";
+import { TargetUtil } from "../utilities/TargetUtil";
 
 export class ArrowUpdateSystem {
 
@@ -29,11 +31,23 @@ export class ArrowUpdateSystem {
                     let hitInfo = new RaycastHit();
                     let hit = Physics.raycast(new Ray(lastPos, tra.position.subtract(lastPos)), hitInfo, tra.position.subtract(lastPos).length());
                     if (hit) {
-                        log(hit, hitInfo.collider, hitInfo.distance, hitInfo.point);
+                        log('Arrow hit', hit, hitInfo.collider, hitInfo.distance, hitInfo.point);
                         arrow.state = 2;
+                        arrow.cd = 0.1;
+                        const ent = hitInfo.collider.entity;
+                        const target = ent.getComponentOrNull(Target);
+                        if (target) {
+                            TargetUtil.killTarget(ent);
+                        }
                     }
                 } else {
                     //remove out range arrows
+                    engine.removeEntity(entity);
+                }
+            } else if (arrow.state == 2) {
+                arrow.cd -= dt;
+                if (arrow.cd <= 0) {
+                    arrow.state = 3;
                     engine.removeEntity(entity);
                 }
             }

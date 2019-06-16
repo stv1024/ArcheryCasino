@@ -1,38 +1,48 @@
 import { MathExtension } from "./MathExtension";
 
 export class Rules {
+    static perPig = 2;
+    static perRabbit = 4;
+    static perBird = 10;
     static getRandomQuests(): Quest[] {
         let quest1 = new Quest(); //2
         {
-            if (Math.random() < 0.1) {
-                quest1.list[3] = 1;
-                let which = Math.random() < 0.4 ? 1 : 2;
-                quest1.list[which] = 1;
+            let r = 0, p = 0, b = 0;
+            if (Math.random() < 0.05) {
+                b = 1;
+                r = Math.random() < 0.4 ? 1 : 0;
+                p = 2 - b - r;
             } else {
                 if (Math.random() < 0.4) {
-                    quest1.list[2] = 2;
+                    p = 2;
                 } else if (Math.random() < 0.8) {
-                    quest1.list[1] = 1;
-                    quest1.list[2] = 1;
+                    b = 1;
+                    p = 1;
                 } else {
-                    quest1.list[1] = 2;
+                    b = 2;
                 }
             }
+            quest1.reward = p * this.perPig + r * this.perRabbit + b * this.perBird;
+            quest1.list[1] = r;
+            quest1.list[2] = p;
+            quest1.list[3] = b;
         }
-        let quest2 = new Quest(); //4|0~1B
+        let quest2 = new Quest(); //3|0~1B
         {
-            let b = Math.random() < 0.25 ? 1 : 0;
-            let r = Math.floor(Math.pow(Math.random(), 2) * (4.49 - b));
+            let b = Math.random() < 0.2 ? 1 : 0;
+            let r = Math.floor(Math.pow(Math.random(), 2) * (3+0.49 - b));
             let p = 4 - b - r;
+            quest2.reward = p * this.perPig + r * this.perRabbit + b * this.perBird;
             quest2.list[1] = r;
             quest2.list[2] = p;
             quest2.list[3] = b;
         }
-        let quest3 = new Quest(); //7|0~3B
+        let quest3 = new Quest(); //5|0~3B
         {
-            let b = Math.floor(Math.pow(Math.random(), 4) * 4 + 0.2);
-            let r = Math.floor(Math.pow(Math.random(), 3) * (7.49 - b));
+            let b = Math.floor(Math.pow(Math.random(), 4) * 4);
+            let r = Math.floor(Math.pow(Math.random(), 3) * (5+0.49 - b));
             let p = 7 - b - r;
+            quest3.reward = p * this.perPig + r * this.perRabbit + b * this.perBird;
             quest3.list[1] = r;
             quest3.list[2] = p;
             quest3.list[3] = b;
@@ -48,6 +58,7 @@ export class Quest {
         2: 0,
         3: 0
     };
+    reward: number;
 }
 
 export class Round {

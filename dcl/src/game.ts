@@ -2,7 +2,6 @@ import { FollowCameraSystem } from "./systems/FollowCameraSystem";
 import { ArrowUpdateSystem } from "./systems/ArrowUpdateSystem";
 import { Arrow } from "./components/Arrow";
 import { Global } from "./Constants";
-import { getUserAccount } from "@decentraland/EthereumController";
 import { AABBCollider } from "./components/AABBCollider";
 import { ColliderUpdateSystem } from "./systems/ColliderUpdateSystem";
 import { SphereCollider } from "./components/SphereCollider";
@@ -41,17 +40,6 @@ function start() {
         cube.addComponent(new BoxShape());
         // cube.addComponent(new SphereCollider(cube, 1));
         cube.addComponent(new AABBCollider(cube, new Vector3(1, 1, 0.1)));
-        engine.addEntity(cube);
-    }
-    for (let i = 0; i < 20; i++) {
-        var cube = new Entity('testBox');
-        cube.addComponent(new Transform({ position: new Vector3(2 + 0.1 * i, 0.05 + 0.1 * i, 16) }));
-        var tra = cube.getComponent(Transform);
-        tra.scale.set(0.1, 0.1, 0.02);
-        cube.addComponent(new BoxShape());
-        cube.getComponent(BoxShape).withCollisions = true;
-        // cube.addComponent(new SphereCollider(cube, 1));
-        cube.addComponent(new AABBCollider(cube, new Vector3(0.1, 0.1, 0.1)));
         engine.addEntity(cube);
     }
 
@@ -156,18 +144,32 @@ function start() {
         }
     });
 
-    executeTask(async () => {
-        try {
-            const address = await getUserAccount()
-            log(address)
-        } catch (error) {
-            log('ERR:', error.toString())
+
+    let i = 0;
+    const tryshoot = () => {
+        if (curHoldingArrow) {
+            var arrow = curHoldingArrow.getComponent(Arrow);
+            curHoldingArrow.setParent(oldArrowContainer);
+            var tra = curHoldingArrow.getComponent(Transform);
+            tra.position = new Vector3(8, 1.6, 4);
+            tra.rotation = Quaternion.Euler(0, 0, 0);
+
+            arrow.state = 1;
+            arrow.velocity = Vector3.Forward().rotate(tra.rotation).scale(15);
+            curHoldingArrow = null;
+        } else {
+            let e = spawnArrow();
         }
-    })
+
+        setTimeout(tryshoot, 500);
+    };
+    setTimeout(tryshoot, 500);
+
+
 }
 start();
 
-function spawnArrow() {
+function spawnArrow(): Entity {
     var arrow = new Entity('Arrow');
     arrow.setParent(oldArrowContainer);
     arrow.addComponent(new Transform());
@@ -183,11 +185,11 @@ function spawnArrow() {
         tra.scale.set(0.01, 0.01, 0.8);
         content.addComponent(new BoxShape());
     }
+    return arrow;
 }
-/*
+
 engine.addSystem(new ColliderUpdateSystem());
-engine.addSystem(new FollowCameraSystem());
+//engine.addSystem(new FollowCameraSystem());
 engine.addSystem(new ArrowUpdateSystem());
-engine.addSystem(new AimingSystem());
+//engine.addSystem(new AimingSystem());
 engine.addSystem(new TargetManageSystem());
-*/
