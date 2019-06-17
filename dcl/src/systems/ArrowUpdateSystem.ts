@@ -1,5 +1,5 @@
 import { Arrow } from "../components/Arrow";
-import { arrowLocalPos, arrowGravity } from "../Constants";
+import { arrowLocalPos, arrowGravity, Global } from "../Constants";
 import { Physics } from "../classes/Physics";
 import { Ray } from "../classes/Ray";
 import { RaycastHit } from "../classes/RaycastHit";
@@ -31,7 +31,7 @@ export class ArrowUpdateSystem {
                     let hitInfo = new RaycastHit();
                     let hit = Physics.raycast(new Ray(lastPos, tra.position.subtract(lastPos)), hitInfo, tra.position.subtract(lastPos).length());
                     if (hit) {
-                        log('Arrow hit', hit, hitInfo.collider, hitInfo.distance, hitInfo.point);
+                        //log('Arrow hit', hit, hitInfo.collider, hitInfo.distance, hitInfo.point);
                         arrow.state = 2;
                         arrow.cd = 0.1;
                         const ent = hitInfo.collider.entity;
@@ -39,10 +39,17 @@ export class ArrowUpdateSystem {
                         if (target) {
                             TargetUtil.killTarget(ent);
                         }
+                        if (Global.curRound) {
+                            Global.curRound.onArrowEndFlying(arrow);
+                        }
                     }
                 } else {
-                    //remove out range arrows
-                    engine.removeEntity(entity);
+                    //remove out-of-range arrows
+                    arrow.state = 2;
+                    arrow.cd = 0.1;
+                    if (Global.curRound) {
+                        Global.curRound.onArrowEndFlying(arrow);
+                    }
                 }
             } else if (arrow.state == 2) {
                 arrow.cd -= dt;

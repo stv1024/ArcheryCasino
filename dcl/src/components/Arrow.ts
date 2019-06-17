@@ -1,6 +1,9 @@
 @Component("Arrow")
 export class Arrow {
-    public state: number = 0; //0-holding 1-flying 2-stuck 3-destroy
+    /**
+     * 0-holding 1-flying 2-stuck 3-destroy
+     */
+    public state: number = 0;
 
     public velocity: Vector3;
 

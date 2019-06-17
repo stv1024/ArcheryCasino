@@ -16,8 +16,6 @@ var curHoldingArrow: Entity;
 var oldArrowContainer: Entity;
 var followCameraContainer: Entity;
 
-var curRound: Round;
-
 function start() {
     var root = new Entity('Root');
     root.addComponent(new Transform({ position: new Vector3(0, 0, 0), rotation: Quaternion.Euler(0, 0, 0), scale: new Vector3().setAll(1) })); //You can change the direction to fit your lands.
@@ -99,13 +97,16 @@ function start() {
     {
         const myEntity = new Entity();
         myEntity.addComponent(new Transform({ position: new Vector3(9.55, 1.1, 1.6), rotation: Quaternion.Euler(-70, 180, 0), scale: new Vector3(1.6, 0.6, 0.2) }))
-        myEntity.addComponent(new BoxShape())
+        let shape = myEntity.addComponent(new BoxShape());
+        shape.visible = false;
         myEntity.setParent(root);
         myEntity.addComponent(
             new OnClick(e => {
-                log("Click : " + e)
-                curRound = new Round();
-                animSceneButtonDown.play();
+                log("Click Start Button : " + e)
+                if (!Global.curRound) {
+                    Global.curRound = new Round();
+                    animSceneButtonDown.play();
+                }
             })
         )
     }
@@ -140,11 +141,17 @@ function start() {
             arrow.velocity = Vector3.Forward().rotate(tra.rotation).scale(15);
             curHoldingArrow = null;
         } else {
-            spawnArrow();
+            if (Global.curRound && Global.curRound.arrowCount > 0) {
+                Global.curRound.arrowCount -= 1;
+                //TODO:刷新UI
+                spawnArrow();
+            }
         }
     });
 
 
+    
+    Global.curRound = new Round();
     let i = 0;
     const tryshoot = () => {
         if (curHoldingArrow) {
