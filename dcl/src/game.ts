@@ -30,6 +30,8 @@ function start() {
     anmtr.addClip(animSceneButtonDown);
 
     archeryScene.setParent(root);
+    let bowShootAnim: AnimationState;
+    let bowPullAnim: AnimationState;
     {
         var cube = new Entity('Target');
         cube.addComponent(new Transform({ position: new Vector3(6, 1.5, 16) }));
@@ -55,15 +57,18 @@ function start() {
         followCameraContainer = entity;
         {
             let bow = new Entity('Bow');
-            bow.addComponent(new Transform({ position: new Vector3(0, 0, 5), rotation: Quaternion.Euler(0, 180, 0), scale: new Vector3().setAll(0.01) }));
+            bow.addComponent(new Transform({ position: new Vector3(0, -0.334, 0.4), rotation: Quaternion.Euler(0, 180, -12.674), scale: new Vector3().setAll(0.01) }));
             bow.addComponent(new GLTFShape('models/shejian/shejian.babylon.gltf'));
             bow.setParent(followCameraContainer);
 
             let animator = new Animator();
-            entity.addComponent(animator);
-            //const clip = new AnimationState("shoot");
-            //animator.addClip(clip);
-            //clip.looping = true;
+            bow.addComponent(animator);
+            bowShootAnim = new AnimationState("shoot");
+            animator.addClip(bowShootAnim);
+            bowShootAnim.looping = false;
+            bowPullAnim = new AnimationState("pull");
+            animator.addClip(bowPullAnim);
+            bowPullAnim.looping = false;
             //clip.play();
         }
         {
@@ -128,75 +133,99 @@ function start() {
     pnlBottom.color = Color4.White();
     pnlBottom.positionY = 15;
 
-    const input = Input.instance;
 
-    input.subscribe("BUTTON_UP", e => {
-        log("Shoot", e);
+    const mouseClickFunc = () => {
+        log("Shoot");
         if (curHoldingArrow) {
+            //Shoot
+            bowShootAnim.weight = 1;
+            bowPullAnim.weight = 0;
+            bowShootAnim.reset();
+            bowShootAnim.play();
+
+            //curHoldingArrow.setParent(oldArrowContainer);
             var arrow = curHoldingArrow.getComponent(Arrow);
             var tra = curHoldingArrow.getComponent(Transform);
-            curHoldingArrow.setParent(oldArrowContainer);
+
+            var cam = Camera.instance;
+            tra.position = cam.position.clone().add(Global.CameraOffset).add(Global.arrowLocalPos.clone().rotate(cam.rotation));
+            tra.rotation = cam.rotation.clone();
 
             arrow.state = 1;
             arrow.velocity = Vector3.Forward().rotate(tra.rotation).scale(15);
             curHoldingArrow = null;
         } else {
+            //Reload
             if (Global.curRound && Global.curRound.arrowCount > 0) {
+                bowShootAnim.weight = 0;
+                bowPullAnim.weight = 1;
+                bowPullAnim.reset();
+                bowPullAnim.play();
                 Global.curRound.arrowCount -= 1;
                 //TODO:刷新UI
                 spawnArrow();
             }
         }
-    });
-
-
-    
-    Global.curRound = new Round();
-    let i = 0;
-    const tryshoot = () => {
-        if (curHoldingArrow) {
-            var arrow = curHoldingArrow.getComponent(Arrow);
-            curHoldingArrow.setParent(oldArrowContainer);
-            var tra = curHoldingArrow.getComponent(Transform);
-            tra.position = new Vector3(8, 1.6, 4);
-            tra.rotation = Quaternion.Euler(0, 0, 0);
-
-            arrow.state = 1;
-            arrow.velocity = Vector3.Forward().rotate(tra.rotation).scale(15);
-            curHoldingArrow = null;
-        } else {
-            let e = spawnArrow();
-        }
-
-        setTimeout(tryshoot, 500);
     };
-    setTimeout(tryshoot, 500);
+    {
+        const myEntity = new Entity();
+        myEntity.setParent(root);
+        myEntity.addComponent(new Transform({ position: new Vector3(8, 1.5, 6.2), scale: new Vector3(16, 12, 1) }))
+        let shape = myEntity.addComponent(new PlaneShape());
+        shape.visible = false;
+        myEntity.addComponent(new OnClick(mouseClickFunc));
 
+        const input = Input.instance;
+        input.subscribe("BUTTON_UP", mouseClickFunc);
+    }
+
+
+    /*
+        Global.curRound = new Round();
+        let i = 0;
+        const tryshoot = () => {
+            if (curHoldingArrow) {
+                var arrow = curHoldingArrow.getComponent(Arrow);
+                curHoldingArrow.setParent(oldArrowContainer);
+                var tra = curHoldingArrow.getComponent(Transform);
+                tra.position = new Vector3(8, 1.6, 4);
+                tra.rotation = Quaternion.Euler(0, 0, 0);
+    
+                arrow.state = 1;
+                arrow.velocity = Vector3.Forward().rotate(tra.rotation).scale(15);
+                curHoldingArrow = null;
+            } else {
+                let e = spawnArrow();
+            }
+    
+            setTimeout(tryshoot, 500);
+        };
+        //setTimeout(tryshoot, 500);
+    */
 
 }
 start();
 
+const arrowGltf = new GLTFShape('models/jianzhi/shejian.babylon.gltf');//FIXME: change the gltf filename
+
 function spawnArrow(): Entity {
     var arrow = new Entity('Arrow');
     arrow.setParent(oldArrowContainer);
-    arrow.addComponent(new Transform());
+    arrow.addComponent(new Transform({position: new Vector3(0, -1, 0)}));
     arrow.addComponent(new Arrow());
-    var tra = arrow.getComponent(Transform);
-    //engine.addEntity(arrow);
     curHoldingArrow = arrow;
     {
-        var content = new Entity('Side0');
+        var content = new Entity('content');
         content.setParent(arrow);
-        content.addComponentOrReplace(new Transform({ position: new Vector3(0, 0, -0.4) }));
-        var tra = content.getComponent(Transform);
-        tra.scale.set(0.01, 0.01, 0.8);
-        content.addComponent(new BoxShape());
+        content.addComponent(new Transform({ position: new Vector3(0, 0, -0.4), rotation: Quaternion.Euler(0, 180, 0), scale: Vector3.Zero().setAll(0.01) }));
+        content.addComponent(arrowGltf);
     }
     return arrow;
 }
 
+
 engine.addSystem(new ColliderUpdateSystem());
-//engine.addSystem(new FollowCameraSystem());
+engine.addSystem(new FollowCameraSystem());
 engine.addSystem(new ArrowUpdateSystem());
 //engine.addSystem(new AimingSystem());
 engine.addSystem(new TargetManageSystem());

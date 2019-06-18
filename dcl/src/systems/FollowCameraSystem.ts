@@ -7,7 +7,7 @@ export class FollowCameraSystem {
     update(dt: number) {
         var camPos = Camera.instance.position.add(Global.CameraOffset);
         var camRot = Camera.instance.rotation;
-        //log('update', camPos, camRot, camRot.eulerAngles)
+        //log('update', Camera.instance.position, camPos, camRot, camRot.eulerAngles)
         for (let entity of this.group.entities) {
             const transform = entity.getComponent(Transform)
             const follow = entity.getComponent(FollowCameraComp);

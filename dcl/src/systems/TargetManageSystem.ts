@@ -3,6 +3,7 @@ import { Target } from "../components/Target";
 import { TargetInfoTable } from "../classes/TargetInfoTable";
 import { MathExtension } from "../utilities/MathExtension";
 import { SphereCollider } from "../components/SphereCollider";
+import { AnimationUtil } from "../utilities/AnimationUtil";
 
 export class TargetManageSystem {
     group = engine.getComponentGroup(Target);
@@ -78,11 +79,14 @@ export class TargetManageSystem {
                     animator.addClip(clip);
                     target.animationStates[animClipName] = clip;
                 });
-                const walk: AnimationState = target.animationStates['Walk'];
-                walk.looping = true;
-                walk.play();
+                target.animationStates['Idle'].looping = true;
+                target.animationStates['Walk'].looping = true;
+                target.animationStates['Spawn'].looping = false;
+                target.animationStates['Die'].looping = false;
+                
+                AnimationUtil.playAnimationOn(target.animationStates, 'Spawn');
             }
-            if (true) {
+            if (false) {
                 let block = new Entity(info.name + '_block');
                 block.addComponent(new Transform({ position: new Vector3(0, info.radius * 0.5, 0), scale: new Vector3().setAll(info.radius) }));
                 block.setParent(entity);

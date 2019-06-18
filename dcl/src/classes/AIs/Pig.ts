@@ -1,5 +1,6 @@
 import { BaseAI } from "./BaseAI";
 import { MathExtension } from "../../utilities/MathExtension";
+import { AnimationUtil } from "../../utilities/AnimationUtil";
 
 export class Pig extends BaseAI {
 
@@ -14,9 +15,11 @@ export class Pig extends BaseAI {
             if (this.state == 0) {
                 this.direction = new Vector3(MathExtension.randomRange(-1, 1), 0, MathExtension.randomRange(-1, 1)).normalize();
                 this.state = 1;
+                AnimationUtil.playAnimationOn(this.target.animationStates, 'Walk');
                 this.countdown += MathExtension.randomRange(6, 10);
             } else if (this.state == 1) {
                 this.state = 0;
+                AnimationUtil.playAnimationOn(this.target.animationStates, 'Idle');
                 this.countdown += MathExtension.randomRange(4, 8);
             }
         }

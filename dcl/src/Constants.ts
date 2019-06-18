@@ -1,11 +1,11 @@
 import { Round } from "./utilities/Rules";
 
 export const g = 9.8;
-export const arrowGravity = 9.8/3;
-export const arrowLocalPos = new Vector3(0.1, -0.02, 0.8);
 export const Global = {
     money: 1000,
     root: null as Entity,
-    CameraOffset: new Vector3(0, 1.6, 0),
+    arrowGravity: 9.8 / 3,
+    CameraOffset: new Vector3(0, 1.7 + 0.72, 0),
+    arrowLocalPos: new Vector3(0, -0.334, 0.8),
     curRound: null as Round,
 };

@@ -3,6 +3,7 @@ import { SphereCollider } from "../components/SphereCollider";
 import { TargetManageSystem } from "../systems/TargetManageSystem";
 import { Global } from "../Constants";
 import { Rules } from "./Rules";
+import { AnimationUtil } from "./AnimationUtil";
 
 export class TargetUtil {
     static killTarget(entTarget: Entity) {
@@ -16,7 +17,7 @@ export class TargetUtil {
         if (ind >= 0) {
             arr.splice(ind, 1);
         }
-        target.animationStates['Die'].play();
+        AnimationUtil.playAnimationOn(target.animationStates, 'Die');
         if (Global.curRound) {
             Global.curRound.bag[target.id] += 1;
 
