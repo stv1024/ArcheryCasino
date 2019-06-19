@@ -57,7 +57,7 @@ function start() {
         followCameraContainer = entity;
         {
             let bow = new Entity('Bow');
-            bow.addComponent(new Transform({ position: new Vector3(0, -0.334, 0.4), rotation: Quaternion.Euler(0, 180, -12.674), scale: new Vector3().setAll(0.01) }));
+            bow.addComponent(new Transform({ position: new Vector3(0, -0.334, 0.6), rotation: Quaternion.Euler(0, 180, 0), scale: new Vector3().setAll(0.01) }));
             bow.addComponent(new GLTFShape('models/shejian/shejian.babylon.gltf'));
             bow.setParent(followCameraContainer);
 
@@ -71,7 +71,7 @@ function start() {
             bowPullAnim.looping = false;
             //clip.play();
         }
-        {
+        {/*
             let entity = new Entity('AimingUI');
             entity.setParent(followCameraContainer);
             entity.addComponent(new Transform({ position: new Vector3(0.1, 0.1, 1) }));
@@ -95,7 +95,7 @@ function start() {
                     textShape.color = Color3.Black();
                     aimingUI.txtInfo = textShape;
                 }
-            }
+            }*/
         }
     }
 
