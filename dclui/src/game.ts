@@ -34,34 +34,54 @@ function setImageSprite(image: UIImage, spriteInfo: SpriteInfo) {
   const pnlBottom = new UIContainerRect(canvas);
   pnlBottom.hAlign = 'center';
   pnlBottom.vAlign = 'bottom';
-  pnlBottom.color = new Color4(1, 1, 1, 0.05);
+  pnlBottom.color = new Color4(0, 0, 0, 0.2);
   pnlBottom.opacity = 1;
-  pnlBottom.positionY = 155;
-  pnlBottom.height = 50;
-  pnlBottom.width = 400;
-
+  pnlBottom.positionY = 0;
+  pnlBottom.height = 150;
+  pnlBottom.width = '100%';
+  {
+    let imageTexture = new Texture("images/bow.png");
+    let spriteInfo = new SpriteInfo(0, 0, 639, 253);
+    const icon = new UIImage(pnlBottom, imageTexture);
+    setImageSprite(icon, spriteInfo);
+    icon.hAlign = 'right';
+    icon.vAlign = 'center';
+    icon.positionX = -50;
+    icon.width = 150;
+    icon.height = 50;
+  }
 
   //lefttop
   const pnlLeft = new UIContainerRect(canvas);
   pnlLeft.hAlign = 'left';
-  pnlLeft.vAlign = 'top';
+  pnlLeft.vAlign = 'bottom';
   pnlLeft.color = new Color4(1, 1, 0, 0.2);
-  pnlLeft.positionY = 32;
-  pnlLeft.height = 150;
+  pnlLeft.positionY = 100;
+  pnlLeft.height = 200;
   pnlLeft.width = 200;
   {
-    let imageTexture = new Texture("images/placeholder1.png");
-    let spriteInfo = new SpriteInfo(0,0,32,32);
+    let imageTexture = new Texture("images/mana1.png");
+    let spriteInfo = new SpriteInfo(0, 0, 32, 32);
     const icon = new UIImage(pnlLeft, imageTexture);
     setImageSprite(icon, spriteInfo);
     icon.width = 16;
     icon.height = 16;
+    
+    for (let i = 0; i < 3; i++) {
+      let imageTexture = new Texture("images/quest_pad"+(i+1)+".png");
+      let spriteInfo = new SpriteInfo(0, 0, 677, 112);
+      const questPad = new UIImage(pnlLeft, imageTexture);
+      setImageSprite(icon, spriteInfo);
+      questPad.positionY = 50 * i;
+      questPad.width = 180;
+      questPad.height = 40;
+    }
   }
 }
 
 class USys {
   update() {
-    log(Camera.instance.rotation.eulerAngles);
+
   }
 }
 
