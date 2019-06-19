@@ -206,7 +206,7 @@ function start() {
 }
 start();
 
-const arrowGltf = new GLTFShape('models/jianzhi/shejian.babylon.gltf');//FIXME: change the gltf filename
+const arrowGltf = new GLTFShape('models/jian/jian.gltf');//FIXME: change the gltf filename
 
 function spawnArrow(): Entity {
     var arrow = new Entity('Arrow');
