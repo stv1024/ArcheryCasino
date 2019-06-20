@@ -22,6 +22,10 @@ export class MainUI {
     4: null as Texture,
   };
 
+  static imgBan: UIImage;
+
+  static txtRoundEnd: UIText;
+
   static refreshAll() {
     this.txtMoney.value = Global.money.toFixed();
     const round = Global.curRound;
@@ -32,15 +36,15 @@ export class MainUI {
         const questPad = this.questPads[i];
 
         let j = 0;
-        for (let id = 1; id <= 3; id++) {
+        [2, 1, 3].forEach(id => {
           for (let k = 0; k < quest.list[id] && j < questPad.slots.length; k++) {
             const slot = questPad.slots[j];
             slot.icon.source = this.targetIcons[id];
             slot.icon.visible = true;
-            slot.tick.visible = round.bag[id] >= quest.list[id];
+            slot.tick.visible = round.bag[id] >= k + 1;
             j++;
           }
-        };
+        });
         for (; j < questPad.slots.length; j++) {
           const slot = questPad.slots[j];
           slot.icon.visible = false;
@@ -63,7 +67,6 @@ export class MainUI {
   }
 
   static refreshArrowCount() {
-
     const round = Global.curRound;
     if (round) {
       this.txtArrowCount.value = round.arrowCount + '/' + Global.arrowsPerRound;
@@ -71,9 +74,15 @@ export class MainUI {
       this.txtArrowCount.value = '0/' + Global.arrowsPerRound;
     }
   }
-}
 
-[3, 7, 2, 1, 88].forEach(id => log('testid', id));
+  static showRoundEndPanel(earnedMoney: number) {
+    MainUI.txtRoundEnd.value = 'You Earned ' + earnedMoney + ' MANA';
+    MainUI.txtRoundEnd.visible = true;
+    setTimeout(() => {
+      MainUI.txtRoundEnd.visible = false;
+    }, 8000);
+  }
+}
 
 class SpriteInfo {
   sourceLeft = 0;
@@ -105,6 +114,32 @@ function setImageSprite(image: UIImage, spriteInfo: SpriteInfo) {
   //TODO：字体IMPACT
   // Create screenspace component
   const canvas = new UICanvas();
+  {//CC
+    const text = new UIText(canvas);
+    text.hAlign = 'center';
+    text.vAlign = 'center';
+    text.hTextAlign = 'center';
+    text.positionX = 0;
+    text.positionY = -30;
+    text.fontSize = 52;
+    text.color = Color4.FromHexString('#ffc300ff');
+    text.fontWeight = "bold";
+    text.visible = false;
+    MainUI.txtRoundEnd = text;
+  }
+  {//CB
+    let imageTexture = new Texture("images/ban.png");
+    let spriteInfo = new SpriteInfo(0, 0, 64, 64);
+    const ban = new UIImage(canvas, imageTexture);
+    setImageSprite(ban, spriteInfo);
+    ban.hAlign = 'center';
+    ban.vAlign = 'bottom';
+    ban.positionX = 0;
+    ban.positionY = 220;
+    ban.width = 48;
+    ban.height = 52;
+    MainUI.imgBan = ban;
+  }
   {//RB
     {
       let imageTexture = new Texture("images/mana1.png");
@@ -195,19 +230,22 @@ function setImageSprite(image: UIImage, spriteInfo: SpriteInfo) {
       icon.width = 23.5;
       icon.height = 26.9;
 
+      var imageTexture1 = new Texture("images/target_icons/icon_pig.png");
+      var spriteInfo1 = new SpriteInfo(0, 0, 77, 88);
+      var imageTexture2 = new Texture("images/check_tick.png");
+      var spriteInfo2 = new SpriteInfo(0, 0, 62, 60);
       for (let i = 0; i < 3; i++) {
         var imageTexture = new Texture("images/quest_pad" + (3 - i) + ".png");
         var spriteInfo = new SpriteInfo(0, 0, 677, 112);
         const questPad = new UIImage(pnlLeft, imageTexture);
         setImageSprite(questPad, spriteInfo);
-        questPad.positionY = -70 + 50 * i;
+        questPad.positionY = 30 - 50 * i;
         questPad.width = 241.8;
         questPad.height = 40;
+
         for (let j = 0; j < 5; j++) {
-          var imageTexture = new Texture("images/target_icons/icon_pig.png");
-          var spriteInfo = new SpriteInfo(0, 0, 77, 88);
-          const targetIcon = new UIImage(questPad, imageTexture);
-          setImageSprite(targetIcon, spriteInfo);
+          const targetIcon = new UIImage(questPad, imageTexture1);
+          setImageSprite(targetIcon, spriteInfo1);
           targetIcon.positionX = -65 + j * 29;
           targetIcon.positionY = 0;
           targetIcon.width = 27.5;
@@ -215,10 +253,8 @@ function setImageSprite(image: UIImage, spriteInfo: SpriteInfo) {
           targetIcon.visible = false;
           MainUI.questPads[i].slots[j].icon = targetIcon;
 
-          var imageTexture = new Texture("images/check_tick.png");
-          var spriteInfo = new SpriteInfo(0, 0, 62, 60);
-          const tick = new UIImage(questPad, imageTexture);
-          setImageSprite(tick, spriteInfo);
+          const tick = new UIImage(questPad, imageTexture2);
+          setImageSprite(tick, spriteInfo2);
           tick.positionX = targetIcon.positionX;
           tick.positionY = 0;
           tick.width = 23.25;
@@ -239,10 +275,10 @@ function setImageSprite(image: UIImage, spriteInfo: SpriteInfo) {
           text.value = '--';
           MainUI.questPads[i].txtQuestReward = text;
 
-          var imageTexture = new Texture("images/check_circle.png");
-          var spriteInfo = new SpriteInfo(0, 0, 72, 72);
-          const circle = new UIImage(questPad, imageTexture);
-          setImageSprite(circle, spriteInfo);
+          // var imageTexture = new Texture("images/check_circle.png");
+          // var spriteInfo = new SpriteInfo(0, 0, 72, 72);
+          const circle = new UIImage(questPad, imageTexture2);
+          setImageSprite(circle, spriteInfo2);
           circle.positionX = 95;
           circle.positionY = 0;
           circle.width = 27;

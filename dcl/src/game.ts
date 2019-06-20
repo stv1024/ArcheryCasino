@@ -5,10 +5,10 @@ import { Global } from "./Constants";
 import { AABBCollider } from "./components/AABBCollider";
 import { ColliderUpdateSystem } from "./systems/ColliderUpdateSystem";
 import { FollowCameraComp } from "./components/FollowCameraComp";
-import { AimingUI } from "./components/AimingUI";
 import { TargetManageSystem } from "./systems/TargetManageSystem";
-import { Rules, Round } from "./utilities/Rules";
+import { Round } from "./utilities/Rules";
 import { MainUI } from "./classes/MainUILayout";
+import { CheckValidZoneSystem } from "./systems/CheckValidZoneSystem";
 
 var curHoldingArrow: Entity;
 var oldArrowContainer: Entity;
@@ -31,14 +31,14 @@ function start() {
     let bowShootAnim: AnimationState;
     let bowPullAnim: AnimationState;
     {
-        var cube = new Entity('Target');
-        cube.addComponent(new Transform({ position: new Vector3(6, 1.5, 16) }));
-        var tra = cube.getComponent(Transform);
-        tra.scale.set(1, 1, 0.02);
-        cube.addComponent(new BoxShape());
-        // cube.addComponent(new SphereCollider(cube, 1));
-        cube.addComponent(new AABBCollider(cube, new Vector3(1, 1, 0.1)));
-        engine.addEntity(cube);
+        // var cube = new Entity('Target');
+        // cube.addComponent(new Transform({ position: new Vector3(6, 1.5, 16) }));
+        // var tra = cube.getComponent(Transform);
+        // tra.scale.set(1, 1, 0.02);
+        // cube.addComponent(new BoxShape());
+        // // cube.addComponent(new SphereCollider(cube, 1));
+        // cube.addComponent(new AABBCollider(cube, new Vector3(1, 1, 0.1)));
+        // engine.addEntity(cube);
     }
 
     {
@@ -122,35 +122,31 @@ function start() {
         )
     }
 
-    // Create screenspace component
-    const canvas = new UICanvas()
-
-    const text = new UIText(canvas)
-    text.value = 'Hello world!'
-
     const mouseClickFunc = () => {
-        log("Shoot");
+        //log("Shoot");
         if (curHoldingArrow) {
-            //Shoot
-            bowShootAnim.weight = 1;
-            bowPullAnim.weight = 0;
-            bowShootAnim.reset();
-            bowShootAnim.play();
+            if (Global.insideValidZone) {
+                //Shoot
+                bowShootAnim.weight = 1;
+                bowPullAnim.weight = 0;
+                bowShootAnim.reset();
+                bowShootAnim.play();
 
-            //curHoldingArrow.setParent(oldArrowContainer);
-            var arrow = curHoldingArrow.getComponent(Arrow);
-            var tra = curHoldingArrow.getComponent(Transform);
+                //curHoldingArrow.setParent(oldArrowContainer);
+                var arrow = curHoldingArrow.getComponent(Arrow);
+                var tra = curHoldingArrow.getComponent(Transform);
 
-            var cam = Camera.instance;
-            tra.position = cam.position.clone().add(Global.CameraOffset).add(Global.arrowLocalPos.clone().rotate(cam.rotation));
-            tra.rotation = cam.rotation.clone();
+                var cam = Camera.instance;
+                tra.position = cam.position.clone().add(Global.CameraOffset).add(Global.arrowLocalPos.clone().rotate(cam.rotation));
+                tra.rotation = cam.rotation.clone();
 
-            arrow.state = 1;
-            arrow.velocity = Vector3.Forward().rotate(tra.rotation).scale(15);
-            curHoldingArrow = null;
+                arrow.state = 1;
+                arrow.velocity = Vector3.Forward().rotate(tra.rotation).scale(15);
+                curHoldingArrow = null;
 
-            //刷新UI
-            MainUI.refreshArrowCount();
+                //刷新UI
+                MainUI.refreshArrowCount();
+            }
         } else {
             //Reload
             if (Global.curRound && Global.curRound.arrowCount > 0) {
@@ -162,46 +158,29 @@ function start() {
                 spawnArrow();
             }
         }
-    };
+    }
     {
-        const myEntity = new Entity();
+        var myEntity = new Entity();
         myEntity.setParent(root);
-        myEntity.addComponent(new Transform({ position: new Vector3(8, 1.5, 6.2), scale: new Vector3(16, 12, 1) }))
-        let shape = myEntity.addComponent(new PlaneShape());
+        myEntity.addComponent(new Transform({ position: new Vector3(8, 6, 6), scale: new Vector3(16, 12, 1) }))
+        var shape = myEntity.addComponent(new PlaneShape());
         shape.visible = false;
         myEntity.addComponent(new OnClick(mouseClickFunc));
 
-        const input = Input.instance;
-        input.subscribe("BUTTON_UP", mouseClickFunc);
+        var myEntity = new Entity();
+        myEntity.setParent(root);
+        myEntity.addComponent(new Transform({ position: new Vector3(8, 12, 3), rotation: Quaternion.Euler(90, 0, 0), scale: new Vector3(16, 6, 1) }))
+        var shape = myEntity.addComponent(new PlaneShape());
+        shape.visible = false;
+        myEntity.addComponent(new OnClick(mouseClickFunc));
+
+        // const input = Input.instance;
+        // input.subscribe("BUTTON_UP", mouseClickFunc);
     }
-
-
-    /*
-        Global.curRound = new Round();
-        let i = 0;
-        const tryshoot = () => {
-            if (curHoldingArrow) {
-                var arrow = curHoldingArrow.getComponent(Arrow);
-                curHoldingArrow.setParent(oldArrowContainer);
-                var tra = curHoldingArrow.getComponent(Transform);
-                tra.position = new Vector3(8, 1.6, 4);
-                tra.rotation = Quaternion.Euler(0, 0, 0);
-    
-                arrow.state = 1;
-                arrow.velocity = Vector3.Forward().rotate(tra.rotation).scale(15);
-                curHoldingArrow = null;
-            } else {
-                let e = spawnArrow();
-            }
-    
-            setTimeout(tryshoot, 500);
-        };
-        //setTimeout(tryshoot, 500);
-    */
 
     setTimeout(() => {
         MainUI.refreshAll();
-    }, 2000);
+    }, 3000);
 }
 start();
 
@@ -222,7 +201,7 @@ function spawnArrow(): Entity {
     return arrow;
 }
 
-
+engine.addSystem(new CheckValidZoneSystem());
 engine.addSystem(new ColliderUpdateSystem());
 engine.addSystem(new FollowCameraSystem());
 engine.addSystem(new ArrowUpdateSystem());

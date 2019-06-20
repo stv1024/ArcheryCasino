@@ -23,25 +23,29 @@ export class TargetUtil {
             Global.curRound.bag[target.id] += 1;
 
             //Target Reward
-            Global.money += Rules.targetRewards[target.id];
+            const newEarnMoney = Rules.targetRewards[target.id];
+            Global.curRound.earnedMoney += newEarnMoney;
+            Global.money += newEarnMoney;
 
-            //TODO: Quest Reward
+            //Quest Reward
             Global.curRound.quests.forEach(quest => {
                 if (quest.finished) return;
                 let finished = true;
                 for (let id in quest.list) {
-                    if (!Global.curRound.bag[id] || Global.curRound.bag[id] < quest.list[id]) {
+                    if (Global.curRound.bag[id] < quest.list[id]) {
                         finished = false;
                         break;
                     }
                 }
                 if (finished) {
                     quest.finished = true;
-                    Global.money += quest.reward;
+                    const newEarnMoney = quest.reward;
+                    Global.curRound.earnedMoney += newEarnMoney;
+                    Global.money += newEarnMoney;
                 }
             });
 
-            //TODO:刷新UI
+            //刷新UI
             MainUI.refreshAll();
         }
     }

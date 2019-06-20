@@ -10,4 +10,5 @@ export const Global = {
     CameraOffset: new Vector3(0, 1.7 + 0.72, 0),
     arrowLocalPos: new Vector3(0, -0.334, 0.8),
     curRound: null as Round,
+    insideValidZone: false,
 };

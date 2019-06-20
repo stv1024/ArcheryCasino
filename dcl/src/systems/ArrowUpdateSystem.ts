@@ -35,7 +35,7 @@ export class ArrowUpdateSystem {
                     if (hit) {
                         //log('Arrow hit', hit, hitInfo.collider, hitInfo.distance, hitInfo.point);
                         arrow.state = 2;
-                        arrow.cd = 1;
+                        arrow.cd = 3;
                         const ent = hitInfo.collider.entity;
                         const target = ent.getComponentOrNull(Target);
                         if (target) {
@@ -48,7 +48,7 @@ export class ArrowUpdateSystem {
                 } else {
                     //remove out-of-range arrows
                     arrow.state = 2;
-                    arrow.cd = 1;
+                    arrow.cd = 3;
                     if (Global.curRound) {
                         Global.curRound.onArrowEndFlying(arrow);
                     }

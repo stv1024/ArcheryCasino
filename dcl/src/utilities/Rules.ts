@@ -1,6 +1,7 @@
 import { MathExtension } from "./MathExtension";
 import { Arrow } from "../components/Arrow";
 import { Global } from "../Constants";
+import { MainUI } from "../classes/MainUILayout";
 
 export class Rules {
 
@@ -13,7 +14,7 @@ export class Rules {
 
     static perPig = 2;
     static perRabbit = 4;
-    static perBird = 10;
+    static perBird = 20;
     static getRandomQuests(): Quest[] {
         let quest1 = new Quest(); //2
         {
@@ -24,12 +25,12 @@ export class Rules {
                 p = 2 - b - r;
             } else {
                 if (Math.random() < 0.4) {
-                    p = 2;
+                    r = 2;
                 } else if (Math.random() < 0.8) {
-                    b = 1;
+                    r = 1;
                     p = 1;
                 } else {
-                    b = 2;
+                    p = 2;
                 }
             }
             quest1.reward = p * this.perPig + r * this.perRabbit + b * this.perBird;
@@ -39,8 +40,8 @@ export class Rules {
         }
         let quest2 = new Quest(); //3|0~1B
         {
-            let b = Math.random() < 0.2 ? 1 : 0;
-            let r = Math.floor(Math.pow(Math.random(), 2) * (3 + 0.49 - b));
+            let b = Math.random() < 0.15 ? 1 : 0;
+            let r = Math.floor(Math.pow(Math.random(), 1.5) * (3 + 0.49 - b));
             let p = 3 - b - r;
             quest2.reward = p * this.perPig + r * this.perRabbit + b * this.perBird;
             quest2.list[1] = r;
@@ -49,8 +50,8 @@ export class Rules {
         }
         let quest3 = new Quest(); //5|0~3B
         {
-            let b = Math.floor(Math.pow(Math.random(), 4) * 4);
-            let r = Math.floor(Math.pow(Math.random(), 3) * (5 + 0.49 - b));
+            let b = Math.floor(Math.pow(Math.random(), 2) * 4);
+            let r = Math.floor(Math.pow(Math.random(), 1.5) * (5 + 0.49 - b));
             let p = 5 - b - r;
             quest3.reward = p * this.perPig + r * this.perRabbit + b * this.perBird;
             quest3.list[1] = r;
@@ -84,6 +85,7 @@ export class Round {
      */
     public aliveArrowCount: number;
     public roundReward: number = 0;
+    public earnedMoney: number = 0;
 
     /**
      *
@@ -97,15 +99,21 @@ export class Round {
     }
 
     onArrowEndFlying(arrow: Arrow) {
-
         this.aliveArrowCount -= 1;
-        log('get onArrowEnd', this.aliveArrowCount)
+        //log('get onArrowEnd', this.aliveArrowCount)
 
         //Round End
         if (this.aliveArrowCount <= 0){
-            Global.curRound = null;
-            //TODO:清除UI
+            //显示结算
+            MainUI.showRoundEndPanel(Global.curRound.earnedMoney);
+
             log('=========Round End==========');
+            Global.curRound = null;
+
+            //清除UI
+            MainUI.refreshAll();
+            
+            //TODO：显示买箭提示
         }
     }
 }
