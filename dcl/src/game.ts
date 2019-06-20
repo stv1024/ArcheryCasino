@@ -4,13 +4,11 @@ import { Arrow } from "./components/Arrow";
 import { Global } from "./Constants";
 import { AABBCollider } from "./components/AABBCollider";
 import { ColliderUpdateSystem } from "./systems/ColliderUpdateSystem";
-import { SphereCollider } from "./components/SphereCollider";
-import { AimingSystem } from "./systems/AimingSystem";
 import { FollowCameraComp } from "./components/FollowCameraComp";
 import { AimingUI } from "./components/AimingUI";
-import { Materials } from "./classes/materials";
 import { TargetManageSystem } from "./systems/TargetManageSystem";
 import { Rules, Round } from "./utilities/Rules";
+import { MainUI } from "./classes/MainUILayout";
 
 var curHoldingArrow: Entity;
 var oldArrowContainer: Entity;
@@ -109,8 +107,16 @@ function start() {
             new OnClick(e => {
                 log("Click Start Button : " + e)
                 if (!Global.curRound) {
-                    Global.curRound = new Round();
-                    animSceneButtonDown.play();
+                    if (Global.money >= Global.costPerRound) {
+                        Global.money -= Global.costPerRound;//Use money
+
+                        Global.curRound = new Round();
+
+                        animSceneButtonDown.reset();
+                        animSceneButtonDown.play();
+
+                        MainUI.refreshAll();
+                    }
                 }
             })
         )
@@ -121,18 +127,6 @@ function start() {
 
     const text = new UIText(canvas)
     text.value = 'Hello world!'
-
-    // const rect = new UIContainerRect(canvas)
-    // rect.width = 500
-    // rect.height = '80%'
-    // rect.color = Color4.Blue()
-    // rect.opacity = 0.5
-
-    const pnlBottom = new UIContainerRect(canvas);
-    pnlBottom.vAlign = 'bottom';
-    pnlBottom.color = Color4.White();
-    pnlBottom.positionY = 15;
-
 
     const mouseClickFunc = () => {
         log("Shoot");
@@ -154,6 +148,9 @@ function start() {
             arrow.state = 1;
             arrow.velocity = Vector3.Forward().rotate(tra.rotation).scale(15);
             curHoldingArrow = null;
+
+            //刷新UI
+            MainUI.refreshArrowCount();
         } else {
             //Reload
             if (Global.curRound && Global.curRound.arrowCount > 0) {
@@ -162,7 +159,6 @@ function start() {
                 bowPullAnim.reset();
                 bowPullAnim.play();
                 Global.curRound.arrowCount -= 1;
-                //TODO:刷新UI
                 spawnArrow();
             }
         }
@@ -203,6 +199,9 @@ function start() {
         //setTimeout(tryshoot, 500);
     */
 
+    setTimeout(() => {
+        MainUI.refreshAll();
+    }, 2000);
 }
 start();
 
@@ -211,7 +210,7 @@ const arrowGltf = new GLTFShape('models/jian/jian.gltf');//FIXME: change the glt
 function spawnArrow(): Entity {
     var arrow = new Entity('Arrow');
     arrow.setParent(oldArrowContainer);
-    arrow.addComponent(new Transform({position: new Vector3(0, -1, 0)}));
+    arrow.addComponent(new Transform({ position: new Vector3(0, -1, 0) }));
     arrow.addComponent(new Arrow());
     curHoldingArrow = arrow;
     {

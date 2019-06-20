@@ -3,6 +3,8 @@ import { Round } from "./utilities/Rules";
 export const g = 9.8;
 export const Global = {
     money: 1000,
+    costPerRound: 10,
+    arrowsPerRound: 10,
     root: null as Entity,
     arrowGravity: 9.8 / 3,
     CameraOffset: new Vector3(0, 1.7 + 0.72, 0),

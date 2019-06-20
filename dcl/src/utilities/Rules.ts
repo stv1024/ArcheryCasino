@@ -41,7 +41,7 @@ export class Rules {
         {
             let b = Math.random() < 0.2 ? 1 : 0;
             let r = Math.floor(Math.pow(Math.random(), 2) * (3 + 0.49 - b));
-            let p = 4 - b - r;
+            let p = 3 - b - r;
             quest2.reward = p * this.perPig + r * this.perRabbit + b * this.perBird;
             quest2.list[1] = r;
             quest2.list[2] = p;
@@ -51,7 +51,7 @@ export class Rules {
         {
             let b = Math.floor(Math.pow(Math.random(), 4) * 4);
             let r = Math.floor(Math.pow(Math.random(), 3) * (5 + 0.49 - b));
-            let p = 7 - b - r;
+            let p = 5 - b - r;
             quest3.reward = p * this.perPig + r * this.perRabbit + b * this.perBird;
             quest3.list[1] = r;
             quest3.list[2] = p;
@@ -82,13 +82,14 @@ export class Round {
     /**
      * How many arrows are still alive (not hit or stopped)?
      */
-    public aliveArrowCount: number = 10;
+    public aliveArrowCount: number;
     public roundReward: number = 0;
 
     /**
      *
      */
     constructor() {
+        this.aliveArrowCount = Global.arrowsPerRound;
         this.quests = Rules.getRandomQuests();
         this.bag = { 1: 0, 2: 0, 3: 0, 4: 0 };
 

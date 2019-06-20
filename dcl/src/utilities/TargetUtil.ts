@@ -4,6 +4,7 @@ import { TargetManageSystem } from "../systems/TargetManageSystem";
 import { Global } from "../Constants";
 import { Rules } from "./Rules";
 import { AnimationUtil } from "./AnimationUtil";
+import { MainUI } from "../classes/MainUILayout";
 
 export class TargetUtil {
     static killTarget(entTarget: Entity) {
@@ -41,7 +42,7 @@ export class TargetUtil {
             });
 
             //TODO:刷新UI
-            log('money', Global.money);
+            MainUI.refreshAll();
         }
     }
 }

@@ -1,3 +1,79 @@
+import { Global } from "../Constants";
+
+export class QuestSlot {
+  icon: UIImage;
+  tick: UIImage;
+}
+export class QuestPad {
+  slots: QuestSlot[] = [];
+  txtQuestReward: UIText;
+  circleQuestReward: UIImage;
+}
+export class MainUI {
+  static questPads: QuestPad[] = [];
+
+  static txtMoney: UIText;
+  static txtArrowCount: UIText;
+
+  static targetIcons = {
+    1: null as Texture,
+    2: null as Texture,
+    3: null as Texture,
+    4: null as Texture,
+  };
+
+  static refreshAll() {
+    this.txtMoney.value = Global.money.toFixed();
+    const round = Global.curRound;
+    if (round) {
+      this.txtArrowCount.value = round.arrowCount + '/' + Global.arrowsPerRound;
+      for (let i = 0; i < 3; i++) {
+        const quest = round.quests[i];
+        const questPad = this.questPads[i];
+
+        let j = 0;
+        for (let id = 1; id <= 3; id++) {
+          for (let k = 0; k < quest.list[id] && j < questPad.slots.length; k++) {
+            const slot = questPad.slots[j];
+            slot.icon.source = this.targetIcons[id];
+            slot.icon.visible = true;
+            slot.tick.visible = round.bag[id] >= quest.list[id];
+            j++;
+          }
+        };
+        for (; j < questPad.slots.length; j++) {
+          const slot = questPad.slots[j];
+          slot.icon.visible = false;
+          slot.tick.visible = false;
+        }
+        questPad.circleQuestReward.visible = quest.finished;
+        questPad.txtQuestReward.value = quest.reward.toString();
+      }
+    } else {
+      this.questPads.forEach(questPad => {
+        questPad.slots.forEach(slot => {
+          slot.icon.visible = false;
+          slot.tick.visible = false;
+        });
+        questPad.txtQuestReward.value = '--';
+        questPad.circleQuestReward.visible = false;
+      });
+      this.txtArrowCount.value = '0/' + Global.arrowsPerRound;
+    }
+  }
+
+  static refreshArrowCount() {
+
+    const round = Global.curRound;
+    if (round) {
+      this.txtArrowCount.value = round.arrowCount + '/' + Global.arrowsPerRound;
+    } else {
+      this.txtArrowCount.value = '0/' + Global.arrowsPerRound;
+    }
+  }
+}
+
+[3, 7, 2, 1, 88].forEach(id => log('testid', id));
 
 class SpriteInfo {
   sourceLeft = 0;
@@ -19,6 +95,13 @@ function setImageSprite(image: UIImage, spriteInfo: SpriteInfo) {
   image.sourceHeight = spriteInfo.sourceHeight;
 }
 {
+  for (let i = 0; i < 3; i++) {
+    const questPad = new QuestPad();
+    for (let j = 0; j < 5; j++) {
+      questPad.slots[j] = new QuestSlot();
+    }
+    MainUI.questPads[i] = questPad;
+  }
   //TODO：字体IMPACT
   // Create screenspace component
   const canvas = new UICanvas();
@@ -44,7 +127,9 @@ function setImageSprite(image: UIImage, spriteInfo: SpriteInfo) {
       text.fontSize = 32;
       text.color = Color4.FromHexString('#ffc300ff');
       //text.fontFamily = "Impact, Helvetica, sans-serif";
-      text.value = '8496523.24';
+      text.value = '--';
+
+      MainUI.txtMoney = text;
     }
     let imageTexture = new Texture("images/bow.png");
     let spriteInfo = new SpriteInfo(0, 0, 639, 253);
@@ -66,7 +151,9 @@ function setImageSprite(image: UIImage, spriteInfo: SpriteInfo) {
       text.positionY = 42;
       text.fontSize = 21;
       //text.fontFamily = "Impact, Arial";
-      text.value = '5/10';
+      text.value = '0/10';
+
+      MainUI.txtArrowCount = text;
     }
   }
 
@@ -125,6 +212,8 @@ function setImageSprite(image: UIImage, spriteInfo: SpriteInfo) {
           targetIcon.positionY = 0;
           targetIcon.width = 27.5;
           targetIcon.height = 40 * 88 / 112;
+          targetIcon.visible = false;
+          MainUI.questPads[i].slots[j].icon = targetIcon;
 
           var imageTexture = new Texture("images/check_tick.png");
           var spriteInfo = new SpriteInfo(0, 0, 62, 60);
@@ -134,6 +223,8 @@ function setImageSprite(image: UIImage, spriteInfo: SpriteInfo) {
           tick.positionY = 0;
           tick.width = 23.25;
           tick.height = 22.5;
+          tick.visible = false;
+          MainUI.questPads[i].slots[j].tick = tick;
         }
         {
           const text = new UIText(questPad);
@@ -145,7 +236,8 @@ function setImageSprite(image: UIImage, spriteInfo: SpriteInfo) {
           text.fontSize = 22;
           text.fontWeight = 'italic';
           text.color = Color4.FromHexString('#ffc300ff');
-          text.value = '20';
+          text.value = '--';
+          MainUI.questPads[i].txtQuestReward = text;
 
           var imageTexture = new Texture("images/check_circle.png");
           var spriteInfo = new SpriteInfo(0, 0, 72, 72);
@@ -155,8 +247,14 @@ function setImageSprite(image: UIImage, spriteInfo: SpriteInfo) {
           circle.positionY = 0;
           circle.width = 27;
           circle.height = 27;
+          circle.visible = false;
+          MainUI.questPads[i].circleQuestReward = circle;
         }
       }
     }
   }
+
+  MainUI.targetIcons[1] = new Texture("images/target_icons/icon_rabbit.png");
+  MainUI.targetIcons[2] = new Texture("images/target_icons/icon_pig.png");
+  MainUI.targetIcons[3] = new Texture("images/target_icons/icon_bird.png");
 }
