@@ -9,6 +9,7 @@ import { TargetManageSystem } from "./systems/TargetManageSystem";
 import { Round } from "./utilities/Rules";
 import { MainUI } from "./classes/MainUILayout";
 import { CheckValidZoneSystem } from "./systems/CheckValidZoneSystem";
+import { AnimationUtil } from "./utilities/AnimationUtil";
 
 var curHoldingArrow: Entity;
 var oldArrowContainer: Entity;
@@ -28,6 +29,7 @@ function start() {
     anmtr.addClip(animSceneButtonDown);
 
     archeryScene.setParent(root);
+    let bowIdleAnim: AnimationState;
     let bowShootAnim: AnimationState;
     let bowPullAnim: AnimationState;
     {
@@ -56,18 +58,21 @@ function start() {
         {
             let bow = new Entity('Bow');
             bow.addComponent(new Transform({ position: new Vector3(0, -0.334, 0.6), rotation: Quaternion.Euler(0, 180, 0), scale: new Vector3().setAll(0.01) }));
-            bow.addComponent(new GLTFShape('models/shejian/shejian.babylon.gltf'));
+            bow.addComponent(new GLTFShape('models/bow/gongjian.gltf'));
             bow.setParent(followCameraContainer);
 
             let animator = new Animator();
             bow.addComponent(animator);
-            bowShootAnim = new AnimationState("shoot");
+            bowIdleAnim = new AnimationState("NOARROW");
+            animator.addClip(bowIdleAnim);
+            bowIdleAnim.looping = false;
+            bowShootAnim = new AnimationState("SHOOT");
             animator.addClip(bowShootAnim);
             bowShootAnim.looping = false;
-            bowPullAnim = new AnimationState("pull");
+            bowPullAnim = new AnimationState("HOLD");
             animator.addClip(bowPullAnim);
             bowPullAnim.looping = false;
-            //clip.play();
+            bowIdleAnim.play();
         }
         {/*
             let entity = new Entity('AimingUI');
@@ -127,6 +132,7 @@ function start() {
         if (curHoldingArrow) {
             if (Global.insideValidZone) {
                 //Shoot
+                bowIdleAnim.weight = 0;
                 bowShootAnim.weight = 1;
                 bowPullAnim.weight = 0;
                 bowShootAnim.reset();
@@ -150,6 +156,7 @@ function start() {
         } else {
             //Reload
             if (Global.curRound && Global.curRound.arrowCount > 0) {
+                bowIdleAnim.weight = 0;
                 bowShootAnim.weight = 0;
                 bowPullAnim.weight = 1;
                 bowPullAnim.reset();
