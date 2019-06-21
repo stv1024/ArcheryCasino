@@ -1,6 +1,7 @@
 import { BaseAI } from "./BaseAI";
 import { MathExtension } from "../../utilities/MathExtension";
 import { g } from "../../Constants";
+import { AnimationUtil } from "../../utilities/AnimationUtil";
 
 export class Rabbit extends BaseAI {
 
@@ -39,6 +40,7 @@ export class Rabbit extends BaseAI {
             if (this.y <= 0) {
                 //Jump
                 this.vY = info.jumpSpeed;
+                AnimationUtil.playAnimationOn(this.target.animationStates, 'Walk');
             }
         }
         if (this.state == 1 || this.y > 0) {

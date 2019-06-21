@@ -2,14 +2,12 @@ import { FollowCameraSystem } from "./systems/FollowCameraSystem";
 import { ArrowUpdateSystem } from "./systems/ArrowUpdateSystem";
 import { Arrow } from "./components/Arrow";
 import { Global } from "./Constants";
-import { AABBCollider } from "./components/AABBCollider";
 import { ColliderUpdateSystem } from "./systems/ColliderUpdateSystem";
 import { FollowCameraComp } from "./components/FollowCameraComp";
 import { TargetManageSystem } from "./systems/TargetManageSystem";
 import { Round } from "./utilities/Rules";
 import { MainUI } from "./classes/MainUILayout";
 import { CheckValidZoneSystem } from "./systems/CheckValidZoneSystem";
-import { AnimationUtil } from "./utilities/AnimationUtil";
 
 var curHoldingArrow: Entity;
 var oldArrowContainer: Entity;
@@ -27,8 +25,30 @@ function start() {
     let animSceneButtonDown = new AnimationState('ButtonDOWN');
     animSceneButtonDown.looping = false;
     anmtr.addClip(animSceneButtonDown);
-
     archeryScene.setParent(root);
+
+    var emmMat = new Material();
+    emmMat.transparencyMode = 2;
+    emmMat.hasAlpha = true;
+    emmMat.albedoTexture = new Texture('images/transparent_hint.png');
+    emmMat.emissiveColor = Color3.Yellow();
+    {
+        var startButtonHint = new Entity('StartButtonHint');
+        startButtonHint.setParent(root);
+        startButtonHint.addComponent(new Transform({ position: new Vector3(9.574, 1.071, 1.629), rotation: Quaternion.Euler(-72.4, 0, 0), scale: new Vector3(1, 0.51636, 0.34752) }));
+        startButtonHint.addComponent(new BoxShape());
+        startButtonHint.addComponent(emmMat);
+        Global.startButtonHint = startButtonHint;
+    }
+    {
+        var validZoneHint = new Entity('ValidZoneHint');
+        validZoneHint.setParent(root);
+        validZoneHint.addComponent(new Transform({ position: new Vector3(7.25, 0.2, 4.946), rotation: Quaternion.Euler(0, 0, 0), scale: new Vector3(4.91, 0.4, 1.41) }));
+        validZoneHint.addComponent(new BoxShape()).visible = false;
+        validZoneHint.addComponent(emmMat);
+        Global.validZoneHint = validZoneHint;
+    }
+
     let bowIdleAnim: AnimationState;
     let bowShootAnim: AnimationState;
     let bowPullAnim: AnimationState;
@@ -122,6 +142,12 @@ function start() {
                         animSceneButtonDown.play();
 
                         MainUI.refreshAll();
+
+                        Global.startButtonHint.getComponent(BoxShape).visible = false;
+                        Global.validZoneHint.getComponent(BoxShape).visible = true;
+                        setTimeout(() => {
+                            Global.validZoneHint.getComponent(BoxShape).visible = false;
+                        }, 10e3);
                     }
                 }
             })

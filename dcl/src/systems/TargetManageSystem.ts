@@ -80,7 +80,7 @@ export class TargetManageSystem {
                     target.animationStates[animClipName] = clip;
                 });
                 target.animationStates['Idle'].looping = true;
-                target.animationStates['Walk'].looping = true;
+                target.animationStates['Walk'].looping = id != '1';
                 target.animationStates['Spawn'].looping = false;
                 target.animationStates['Die'].looping = false;
                 
