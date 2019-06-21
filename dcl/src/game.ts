@@ -60,6 +60,7 @@ function start() {
             bow.addComponent(new Transform({ position: new Vector3(0, -0.334, 0.6), rotation: Quaternion.Euler(0, 180, 0), scale: new Vector3().setAll(0.01) }));
             bow.addComponent(new GLTFShape('models/bow/gongjian.gltf'));
             bow.setParent(followCameraContainer);
+            Global.bow = bow;
 
             let animator = new Animator();
             bow.addComponent(animator);
@@ -138,7 +139,7 @@ function start() {
                 bowShootAnim.reset();
                 bowShootAnim.play();
 
-                //curHoldingArrow.setParent(oldArrowContainer);
+                curHoldingArrow.setParent(oldArrowContainer);
                 var arrow = curHoldingArrow.getComponent(Arrow);
                 var tra = curHoldingArrow.getComponent(Transform);
 
@@ -195,8 +196,8 @@ const arrowGltf = new GLTFShape('models/jian/jian.gltf');//FIXME: change the glt
 
 function spawnArrow(): Entity {
     var arrow = new Entity('Arrow');
-    arrow.setParent(oldArrowContainer);
-    arrow.addComponent(new Transform({ position: new Vector3(0, -1, 0) }));
+    arrow.setParent(followCameraContainer);
+    arrow.addComponent(new Transform({ position: Global.arrowLocalPos }));
     arrow.addComponent(new Arrow());
     curHoldingArrow = arrow;
     {
