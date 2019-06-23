@@ -94,6 +94,9 @@ function start() {
             animator.addClip(bowPullAnim);
             bowPullAnim.looping = false;
             bowIdleAnim.play();
+
+            const audShoot = new AudioClip('sounds/shoot.mp3');
+            Global.asBowShoot = bow.addComponent(new AudioSource(audShoot));
         }
         {/*
             let entity = new Entity('AimingUI');
@@ -165,6 +168,8 @@ function start() {
                 bowShootAnim.reset();
                 bowShootAnim.play();
 
+                Global.asBowShoot.playOnce();
+
                 curHoldingArrow.setParent(oldArrowContainer);
                 var arrow = curHoldingArrow.getComponent(Arrow);
                 var tra = curHoldingArrow.getComponent(Transform);
@@ -210,6 +215,28 @@ function start() {
 
         // const input = Input.instance;
         // input.subscribe("BUTTON_UP", mouseClickFunc);
+    }
+    {
+        var audioHolder = new Entity('BGM');
+        audioHolder.setParent(root);
+        audioHolder.addComponent(new Transform({ position: new Vector3(8, 1, 1) }));
+        const bgm = new AudioClip('sounds/bgm.mp3');
+        const source = audioHolder.addComponent(new AudioSource(bgm));
+        source.volume = 0.3;
+        source.loop = true;
+        source.playing = true;
+        
+        var pigIdleHolder = new Entity('PigIdleAudio');
+        pigIdleHolder.setParent(root);
+        pigIdleHolder.addComponent(new Transform({ position: new Vector3(8, 0.5, 10) }));
+        Global.asPigIdle = pigIdleHolder.addComponent(new AudioSource(new AudioClip('sounds/pig_idle.mp3')));
+        Global.asPigIdle.playing = false;
+        
+        var birdIdleHolder = new Entity('BirdIdleAudio');
+        birdIdleHolder.setParent(root);
+        birdIdleHolder.addComponent(new Transform({ position: new Vector3(8, 6, 16) }));
+        Global.asBirdIdle = birdIdleHolder.addComponent(new AudioSource(new AudioClip('sounds/bird_idle.mp3')));
+        Global.asBirdIdle.playing = false;
     }
 
     setTimeout(() => {

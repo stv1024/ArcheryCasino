@@ -1,5 +1,6 @@
 import { BaseAI } from "./BaseAI";
 import { MathExtension, Vector3Extension } from "../../utilities/MathExtension";
+import { Global } from "../../Constants";
 
 export class Bird extends BaseAI {
 
@@ -10,6 +11,7 @@ export class Bird extends BaseAI {
 
     local: Transform;
     t = 0;
+    nextTweetT = 10;
 
     constructor() {
         super();
@@ -18,7 +20,7 @@ export class Bird extends BaseAI {
         this.orbitRadius = radius;
         this.orbitNormal = Vector3Extension.RandomOnUnitSphere();
         this.orbitOmega = MathExtension.randomRange(0.5, 1) * (Math.random() > 0.5 ? 1 : -1);
-
+        this.nextTweetT = this.t + Math.PI * 2 / this.orbitOmega;
     }
 
     public update(dt: number) {
@@ -27,9 +29,14 @@ export class Bird extends BaseAI {
         const r = this.orbitRadius;
         const w = this.orbitOmega;
         let pos = new Vector3(o.x + r * Math.cos(w * this.t), o.y, o.z + r * Math.sin(w * this.t));
-        let dir = new Vector3(-Math.sin(w * this.t), 0, Math.cos(w * this.t));
+        let dir = new Vector3(-Math.sin(w * this.t), 0, Math.cos(w * this.t)).scale(this.orbitOmega > 0 ? 1 : -1);
 
         this.target.transform.position = pos;
         this.direction = dir;
+
+        if (this.t >= this.nextTweetT) {
+            Global.asBirdIdle.playOnce();
+            this.nextTweetT = this.t + Math.PI * 2 / this.orbitOmega;
+        }
     }
 }

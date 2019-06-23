@@ -14,4 +14,8 @@ export const Global = {
     arrowLocalPos: new Vector3(0, -0.334, 0.8),
     curRound: null as Round,
     insideValidZone: false,
+    
+    asBowShoot: null as AudioSource,
+    asPigIdle: null as AudioSource,
+    asBirdIdle: null as AudioSource,
 };

@@ -1,6 +1,7 @@
 import { BaseAI } from "./BaseAI";
 import { MathExtension } from "../../utilities/MathExtension";
 import { AnimationUtil } from "../../utilities/AnimationUtil";
+import { Global } from "../../Constants";
 
 export class Pig extends BaseAI {
 
@@ -21,6 +22,10 @@ export class Pig extends BaseAI {
                 this.state = 0;
                 AnimationUtil.playAnimationOn(this.target.animationStates, 'Idle');
                 this.countdown += MathExtension.randomRange(4, 8);
+
+                if (Math.random() <= 1) {
+                    Global.asPigIdle.playOnce();
+                }
             }
         }
         if (this.state == 0) {
