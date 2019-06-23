@@ -70,7 +70,7 @@ export class TargetManageSystem {
                 let art = new Entity(info.name + '_art');
                 let tra = art.addComponent(new Transform({ position: new Vector3(0, 0, 0).add(info.offset), scale: new Vector3().setAll(info.scale) }));
                 art.setParent(entity);
-                const shape = art.addComponent(model);
+                const shape = art.addComponent(model); //FIXME：最后一只猪死后，新刷出来的猪有一定概率加载不出模型
 
                 let animator = new Animator();
                 art.addComponent(animator);

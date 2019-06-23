@@ -113,7 +113,8 @@ export class Round {
             //清除UI
             MainUI.refreshAll();
             
-            //TODO：显示买箭提示
+            //音效
+            Global.asEarn.playOnce();
         }
     }
 }

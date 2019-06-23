@@ -221,10 +221,18 @@ function start() {
         audioHolder.setParent(root);
         audioHolder.addComponent(new Transform({ position: new Vector3(8, 1, 1) }));
         const bgm = new AudioClip('sounds/bgm.mp3');
-        const source = audioHolder.addComponent(new AudioSource(bgm));
+        var source = audioHolder.addComponent(new AudioSource(bgm));
         source.volume = 0.3;
         source.loop = true;
         source.playing = true;
+        
+        var audioHolder = new Entity('EarnAudio');
+        audioHolder.setParent(root);
+        audioHolder.addComponent(new Transform({ position: new Vector3(8, 1, 1) }));
+        const earn = new AudioClip('sounds/earn.mp3');
+        var source = audioHolder.addComponent(new AudioSource(earn));
+        Global.asEarn = source;
+        source.playing = false;
         
         var pigIdleHolder = new Entity('PigIdleAudio');
         pigIdleHolder.setParent(root);
