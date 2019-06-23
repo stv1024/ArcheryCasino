@@ -5,6 +5,7 @@ import { RaycastHit } from "../classes/RaycastHit";
 import { Target } from "../components/Target";
 import { TargetUtil } from "../utilities/TargetUtil";
 import { Global } from "../Constants";
+import { MainUI } from "../classes/MainUILayout";
 
 export class ArrowUpdateSystem {
 
@@ -40,6 +41,13 @@ export class ArrowUpdateSystem {
                         const target = ent.getComponentOrNull(Target);
                         if (target) {
                             TargetUtil.killTarget(ent);
+
+                            //Hit feedback UI
+                            Global.asHit.playOnce();
+                            MainUI.hitFeedback.visible = true;
+                            setTimeout(() => {
+                                MainUI.hitFeedback.visible = false;
+                            }, 200);
                         }
                         if (Global.curRound) {
                             Global.curRound.onArrowEndFlying(arrow);

@@ -97,6 +97,13 @@ function start() {
 
             const audShoot = new AudioClip('sounds/shoot.mp3');
             Global.asBowShoot = bow.addComponent(new AudioSource(audShoot));
+            Global.asBowShoot.playing = false;
+            const audDrawHolder = new Entity();
+            audDrawHolder.setParent(bow);
+            audDrawHolder.addComponent(new Transform());
+            const audDraw = new AudioClip('sounds/draw.mp3');
+            Global.asDrawBow = audDrawHolder.addComponent(new AudioSource(audDraw));
+            Global.asDrawBow.playing = false;
         }
         {/*
             let entity = new Entity('AimingUI');
@@ -151,12 +158,31 @@ function start() {
                         setTimeout(() => {
                             Global.validZoneHint.getComponent(BoxShape).visible = false;
                         }, 10e3);
+
+                        Global.asStart.playOnce();
+
+                        setTimeout(() => {
+                            tryReload();
+                        }, 200);
                     }
                 }
             })
         )
     }
 
+    function tryReload() {
+        if (!curHoldingArrow && Global.curRound && Global.curRound.arrowCount > 0) {
+            bowIdleAnim.weight = 0;
+            bowShootAnim.weight = 0;
+            bowPullAnim.weight = 1;
+            bowPullAnim.reset();
+            bowPullAnim.play();
+            Global.curRound.arrowCount -= 1;
+            spawnArrow();
+
+            Global.asDrawBow.playOnce();
+        }
+    }
     const mouseClickFunc = () => {
         //log("Shoot");
         if (curHoldingArrow) {
@@ -184,18 +210,14 @@ function start() {
 
                 //刷新UI
                 MainUI.refreshArrowCount();
+
+                setTimeout(() => {
+                    tryReload();
+                }, 200);
             }
         } else {
             //Reload
-            if (Global.curRound && Global.curRound.arrowCount > 0) {
-                bowIdleAnim.weight = 0;
-                bowShootAnim.weight = 0;
-                bowPullAnim.weight = 1;
-                bowPullAnim.reset();
-                bowPullAnim.play();
-                Global.curRound.arrowCount -= 1;
-                spawnArrow();
-            }
+            tryReload();
         }
     }
     {
@@ -225,26 +247,43 @@ function start() {
         source.volume = 0.3;
         source.loop = true;
         source.playing = true;
-        
+
         var audioHolder = new Entity('EarnAudio');
         audioHolder.setParent(root);
         audioHolder.addComponent(new Transform({ position: new Vector3(8, 1, 1) }));
         const earn = new AudioClip('sounds/earn.mp3');
         var source = audioHolder.addComponent(new AudioSource(earn));
         Global.asEarn = source;
+        source.loop = false;
         source.playing = false;
-        
+
         var pigIdleHolder = new Entity('PigIdleAudio');
         pigIdleHolder.setParent(root);
         pigIdleHolder.addComponent(new Transform({ position: new Vector3(8, 0.5, 10) }));
         Global.asPigIdle = pigIdleHolder.addComponent(new AudioSource(new AudioClip('sounds/pig_idle.mp3')));
+        Global.asPigIdle.loop = false;
         Global.asPigIdle.playing = false;
-        
+
         var birdIdleHolder = new Entity('BirdIdleAudio');
         birdIdleHolder.setParent(root);
         birdIdleHolder.addComponent(new Transform({ position: new Vector3(8, 6, 16) }));
         Global.asBirdIdle = birdIdleHolder.addComponent(new AudioSource(new AudioClip('sounds/bird_idle.mp3')));
+        Global.asBirdIdle.loop = false;
         Global.asBirdIdle.playing = false;
+
+        var audHitHolder = new Entity('audHitHolder');
+        audHitHolder.setParent(root);
+        audHitHolder.addComponent(new Transform({ position: new Vector3(8, 0.5, 10) }));
+        Global.asHit = audHitHolder.addComponent(new AudioSource(new AudioClip('sounds/hit.mp3')));
+        Global.asHit.loop = false;
+        Global.asHit.playing = false;
+
+        var audStartHolder = new Entity('audStartHolder');
+        audStartHolder.setParent(root);
+        audStartHolder.addComponent(new Transform({ position: new Vector3(8, 1, 1) }));
+        Global.asStart = audStartHolder.addComponent(new AudioSource(new AudioClip('sounds/start.mp3')));
+        Global.asStart.loop = false;
+        Global.asStart.playing = false;
     }
 
     setTimeout(() => {
@@ -253,12 +292,13 @@ function start() {
 }
 start();
 
-const arrowGltf = new GLTFShape('models/jian/jian.gltf');//FIXME: change the gltf filename
+const arrowGltf = new GLTFShape('models/jian/jian.gltf');
+
 
 function spawnArrow(): Entity {
     var arrow = new Entity('Arrow');
     arrow.setParent(followCameraContainer);
-    arrow.addComponent(new Transform({ position: Global.arrowLocalPos }));
+    arrow.addComponent(new Transform({ position: Global.arrowLocalPos.add(new Vector3(0, 0.05, 0)) }));
     arrow.addComponent(new Arrow());
     curHoldingArrow = arrow;
     {

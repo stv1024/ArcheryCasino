@@ -35,6 +35,7 @@ export class Rabbit extends BaseAI {
         }
         if (this.state == 0) {
             //Keep Idle
+            AnimationUtil.playAnimationOn(this.target.animationStates, 'Idle');
         } else if (this.state == 1) {
             const info = this.target.info;
             if (this.y <= 0) {

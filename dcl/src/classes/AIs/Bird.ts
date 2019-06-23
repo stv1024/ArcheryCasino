@@ -1,6 +1,7 @@
 import { BaseAI } from "./BaseAI";
 import { MathExtension, Vector3Extension } from "../../utilities/MathExtension";
 import { Global } from "../../Constants";
+import { AnimationUtil } from "../../utilities/AnimationUtil";
 
 export class Bird extends BaseAI {
 
@@ -21,6 +22,10 @@ export class Bird extends BaseAI {
         this.orbitNormal = Vector3Extension.RandomOnUnitSphere();
         this.orbitOmega = MathExtension.randomRange(0.5, 1) * (Math.random() > 0.5 ? 1 : -1);
         this.nextTweetT = this.t + Math.PI * 2 / this.orbitOmega;
+
+        setTimeout(() => {
+            AnimationUtil.playAnimationOn(this.target.animationStates, 'Idle');
+        }, 1000);
     }
 
     public update(dt: number) {
@@ -36,7 +41,7 @@ export class Bird extends BaseAI {
 
         if (this.t >= this.nextTweetT) {
             Global.asBirdIdle.playOnce();
-            this.nextTweetT = this.t + Math.PI * 2 / this.orbitOmega;
+            this.nextTweetT = this.t + Math.PI * 2 / this.orbitOmega * 2;
         }
     }
 }

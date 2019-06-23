@@ -23,7 +23,7 @@ export class MainUI {
   };
 
   static imgBan: UIImage;
-
+  static hitFeedback: UIImage;
   static txtRoundEnd: UIText;
 
   static refreshAll() {
@@ -126,6 +126,19 @@ function setImageSprite(image: UIImage, spriteInfo: SpriteInfo) {
     text.fontWeight = "bold";
     text.visible = false;
     MainUI.txtRoundEnd = text;
+    
+    let imageTexture = new Texture("images/hit_feedback.png");
+    let spriteInfo = new SpriteInfo(0, 0, 128, 128);
+    const hitFeedback = new UIImage(canvas, imageTexture);
+    setImageSprite(hitFeedback, spriteInfo);
+    hitFeedback.hAlign = 'center';
+    hitFeedback.vAlign = 'center';
+    hitFeedback.positionX = 0;
+    hitFeedback.positionY = '5.5%';
+    hitFeedback.width = 100;
+    hitFeedback.height = 100;
+    hitFeedback.visible = false;
+    MainUI.hitFeedback = hitFeedback;
   }
   {//CB
     let imageTexture = new Texture("images/ban.png");

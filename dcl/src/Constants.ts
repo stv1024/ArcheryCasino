@@ -19,4 +19,7 @@ export const Global = {
     asPigIdle: null as AudioSource,
     asBirdIdle: null as AudioSource,
     asEarn: null as AudioSource,
+    asHit: null as AudioSource,
+    asStart: null as AudioSource,
+    asDrawBow: null as AudioSource,
 };
