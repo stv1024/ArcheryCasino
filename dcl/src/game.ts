@@ -294,7 +294,6 @@ start();
 
 const arrowGltf = new GLTFShape('models/jian/jian.gltf');
 
-
 function spawnArrow(): Entity {
     var arrow = new Entity('Arrow');
     arrow.setParent(followCameraContainer);
