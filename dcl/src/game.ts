@@ -315,6 +315,12 @@ function spawnArrow(): Entity {
     }
     return arrow;
 }
+{//Preload Arrow
+    var content = new Entity();
+    content.setParent(Global.root);
+    content.addComponent(new Transform({ position: new Vector3(0, 0, 0), scale: Vector3.Zero().setAll(0.008) }));
+    content.addComponent(arrowGltf);
+}
 
 engine.addSystem(new CheckValidZoneSystem());
 engine.addSystem(new ColliderUpdateSystem());
