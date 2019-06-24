@@ -21,7 +21,7 @@ function start() {
     var archeryScene = new Entity('Scene');
     archeryScene.addComponent(new Transform({ position: new Vector3(0, 0, 0), rotation: Quaternion.Euler(0, 180, 0), scale: new Vector3().setAll(2.13) }));
     archeryScene.addComponent(new GLTFShape('models/scene/scene.gltf'));
-    let anmtr = archeryScene.addComponent(new Animator());
+    var anmtr = archeryScene.addComponent(new Animator());
     let animSceneButtonDown = new AnimationState('ButtonDOWN');
     animSceneButtonDown.looping = false;
     anmtr.addClip(animSceneButtonDown);
@@ -38,6 +38,13 @@ function start() {
         startButtonHint.addComponent(new Transform({ position: new Vector3(9.574, 1.071, 1.629), rotation: Quaternion.Euler(-72.4, 0, 0), scale: new Vector3(1, 0.51636, 0.34752) }));
         startButtonHint.addComponent(new BoxShape());
         startButtonHint.addComponent(emmMat);
+        // startButtonHint.addComponent(new Transform({ position: new Vector3(9.574, 1.071, 1.629), rotation: Quaternion.Euler(-72.4+90, 0, 0), scale: new Vector3(0.18, 0.12, 0.13) }));
+        // startButtonHint.addComponent(new GLTFShape('models/hintzone/anniu.gltf'));
+        // var anmtr = startButtonHint.addComponent(new Animator());
+        // var clip = new AnimationState('LOOP');
+        // anmtr.addClip(clip);
+        // clip.looping = true;
+        // clip.play();
         Global.startButtonHint = startButtonHint;
     }
     {
