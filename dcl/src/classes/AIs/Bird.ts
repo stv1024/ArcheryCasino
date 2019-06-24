@@ -5,44 +5,36 @@ import { AnimationUtil } from "../../utilities/AnimationUtil";
 
 export class Bird extends BaseAI {
 
-    orbitCenter: Vector3;
-    orbitRadius: number;
-    orbitNormal: Vector3;
-    orbitOmega: number;
+    state: number = 0; //0:Idle 1:Run
 
-    local: Transform;
-    t = 0;
-    nextTweetT = 10;
+    countdown: number = 0;
 
-    constructor() {
-        super();
-        let radius = MathExtension.randomRange(3, 7.5);
-        this.orbitCenter = new Vector3(MathExtension.randomRange(radius, 16 - radius), MathExtension.randomRange(3, 8), MathExtension.randomRange(10 + radius, 30 - radius));
-        this.orbitRadius = radius;
-        this.orbitNormal = Vector3Extension.RandomOnUnitSphere();
-        this.orbitOmega = MathExtension.randomRange(0.5, 1) * (Math.random() > 0.5 ? 1 : -1);
-        this.nextTweetT = this.t + Math.PI * 2 / this.orbitOmega;
-
-        setTimeout(() => {
-            AnimationUtil.playAnimationOn(this.target.animationStates, 'Idle');
-        }, 1000);
-    }
 
     public update(dt: number) {
-        return;
-        this.t += dt;
-        const o = this.orbitCenter;
-        const r = this.orbitRadius;
-        const w = this.orbitOmega;
-        let pos = new Vector3(o.x + r * Math.cos(w * this.t), o.y, o.z + r * Math.sin(w * this.t));
-        let dir = new Vector3(-Math.sin(w * this.t), 0, Math.cos(w * this.t)).scale(this.orbitOmega > 0 ? 1 : -1);
+        this.countdown -= dt;
+        if (this.countdown <= 0) {
+            if (this.state == 0) {
+                this.direction = new Vector3(MathExtension.randomRange(-1, 1), 0, MathExtension.randomRange(-1, 1)).normalize();
+                this.state = 1;
+                this.countdown += MathExtension.randomRange(0.5, 1);
+            } else if (this.state == 1) {
+                this.state = 0;
+                AnimationUtil.playAnimationOn(this.target.animationStates, 'Idle');
+                this.countdown += MathExtension.randomRange(10, 16);
 
-        this.target.transform.position = pos;
-        this.direction = dir;
-
-        if (this.t >= this.nextTweetT) {
-            Global.asBirdIdle.playOnce();
-            this.nextTweetT = this.t + Math.PI * 2 / Math.abs(this.orbitOmega) * 2;
+                if (Math.random() <= 0.5) {
+                    Global.asPigIdle.playOnce();
+                }
+            }
+        }
+        if (this.state == 0) {
+            //Keep Idle
+        } else if (this.state == 1) {
+            //Run
+            const speed = this.target.info.speed;
+            const tra = this.target.transform;
+            tra.position.addInPlace(this.direction.scale(speed * dt));
+            this.checkBoundaryAndTurn();
         }
     }
 }

@@ -41,7 +41,7 @@ TargetInfoTable[3] = {
     max: new Vector3(15, 9, 31),
     output: 3,
     radius: 0.3,
-    speed: 1,
+    speed: 8,
     maxCount: 2,
     ai: Bird,
     model: new GLTFShape('models/targets/niao.gltf'),
