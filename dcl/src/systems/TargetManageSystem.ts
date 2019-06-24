@@ -37,7 +37,10 @@ export class TargetManageSystem {
                 let ai = target.ai;
                 if (ai) {
                     ai.update(dt);
-                    tra.rotation = Quaternion.FromToRotation(Vector3.Forward(), ai.direction);
+                    const curRot = Quaternion.FromToRotation(Vector3.Forward(), ai.direction);
+                    if (tra.rotation.eulerAngles.subtract(curRot.eulerAngles).lengthSquared() > 1e-2) {
+                        tra.rotation = curRot;
+                    }
                 }
             } else if (target.state == 1) {
                 target.cd -= dt;
@@ -52,7 +55,7 @@ export class TargetManageSystem {
 
     createTargetEntity(id: string): Entity {
         let info = TargetInfoTable[id];
-        log('createTargetEntity', id, info)
+        //log('createTargetEntity', id, info)
         if (!info) return null;
         let entity = new Entity(info.name);
         entity.setParent(Global.root);
@@ -83,7 +86,7 @@ export class TargetManageSystem {
                 target.animationStates['Walk'].looping = id != '1';
                 target.animationStates['Spawn'].looping = false;
                 target.animationStates['Die'].looping = false;
-                
+
                 AnimationUtil.playAnimationOn(target.animationStates, 'Spawn');
             }
             if (false) {

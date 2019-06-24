@@ -14,7 +14,7 @@ export class Rules {
 
     static perPig = 2;
     static perRabbit = 4;
-    static perBird = 20;
+    static perBird = 10;
     static getRandomQuests(): Quest[] {
         let quest1 = new Quest(); //2
         {

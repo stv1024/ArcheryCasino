@@ -79,12 +79,12 @@ function start() {
     {
         let entity = new Entity('FollowCamera');
         entity.addComponent(new Transform());
-        entity.addComponent(new FollowCameraComp());
+        entity.addComponent(new FollowCameraComp(0.2));
         entity.setParent(root);
         followCameraContainer = entity;
         {
             let bow = new Entity('Bow');
-            bow.addComponent(new Transform({ position: new Vector3(0, -0.334, 0.6), rotation: Quaternion.Euler(0, 180, 0), scale: new Vector3().setAll(0.01) }));
+            bow.addComponent(new Transform({ position: new Vector3(0, -0.334, 0.65), rotation: Quaternion.Euler(0, 180, 0), scale: new Vector3().setAll(0.008) }));
             bow.addComponent(new GLTFShape('models/bow/gongjian.gltf'));
             bow.setParent(followCameraContainer);
             Global.bow = bow;
@@ -170,7 +170,7 @@ function start() {
 
                         setTimeout(() => {
                             tryReload();
-                        }, 200);
+                        }, 1000);
                     }
                 }
             })
@@ -310,7 +310,7 @@ function spawnArrow(): Entity {
     {
         var content = new Entity('content');
         content.setParent(arrow);
-        content.addComponent(new Transform({ position: new Vector3(0, 0, -0.4), rotation: Quaternion.Euler(0, 180, 0), scale: Vector3.Zero().setAll(0.01) }));
+        content.addComponent(new Transform({ position: new Vector3(0, 0, -0.4), rotation: Quaternion.Euler(0, 180, 0), scale: Vector3.Zero().setAll(0.008) }));
         content.addComponent(arrowGltf);
     }
     return arrow;
@@ -320,5 +320,4 @@ engine.addSystem(new CheckValidZoneSystem());
 engine.addSystem(new ColliderUpdateSystem());
 engine.addSystem(new FollowCameraSystem());
 engine.addSystem(new ArrowUpdateSystem());
-//engine.addSystem(new AimingSystem());
 engine.addSystem(new TargetManageSystem());

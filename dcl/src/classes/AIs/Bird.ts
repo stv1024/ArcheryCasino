@@ -17,7 +17,7 @@ export class Bird extends BaseAI {
     constructor() {
         super();
         let radius = MathExtension.randomRange(3, 7.5);
-        this.orbitCenter = new Vector3(MathExtension.randomRange(radius, 16 - radius), MathExtension.randomRange(0 + radius, 17.5 - radius), MathExtension.randomRange(10 + radius, 30 - radius));
+        this.orbitCenter = new Vector3(MathExtension.randomRange(radius, 16 - radius), MathExtension.randomRange(3, 8), MathExtension.randomRange(10 + radius, 30 - radius));
         this.orbitRadius = radius;
         this.orbitNormal = Vector3Extension.RandomOnUnitSphere();
         this.orbitOmega = MathExtension.randomRange(0.5, 1) * (Math.random() > 0.5 ? 1 : -1);
@@ -29,6 +29,7 @@ export class Bird extends BaseAI {
     }
 
     public update(dt: number) {
+        return;
         this.t += dt;
         const o = this.orbitCenter;
         const r = this.orbitRadius;
@@ -41,7 +42,7 @@ export class Bird extends BaseAI {
 
         if (this.t >= this.nextTweetT) {
             Global.asBirdIdle.playOnce();
-            this.nextTweetT = this.t + Math.PI * 2 / this.orbitOmega * 2;
+            this.nextTweetT = this.t + Math.PI * 2 / Math.abs(this.orbitOmega) * 2;
         }
     }
 }

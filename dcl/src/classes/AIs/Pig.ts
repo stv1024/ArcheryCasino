@@ -17,13 +17,13 @@ export class Pig extends BaseAI {
                 this.direction = new Vector3(MathExtension.randomRange(-1, 1), 0, MathExtension.randomRange(-1, 1)).normalize();
                 this.state = 1;
                 AnimationUtil.playAnimationOn(this.target.animationStates, 'Walk');
-                this.countdown += MathExtension.randomRange(6, 10);
+                this.countdown += MathExtension.randomRange(0.75, 1.5);
             } else if (this.state == 1) {
                 this.state = 0;
                 AnimationUtil.playAnimationOn(this.target.animationStates, 'Idle');
-                this.countdown += MathExtension.randomRange(4, 8);
+                this.countdown += MathExtension.randomRange(8, 16);
 
-                if (Math.random() <= 1) {
+                if (Math.random() <= 0.5) {
                     Global.asPigIdle.playOnce();
                 }
             }

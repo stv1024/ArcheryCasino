@@ -27,36 +27,46 @@ export class ArrowUpdateSystem {
                 */
             } else if (arrow.state == 1) {//flying
                 let lastPos = tra.position.clone();
-                tra.position = tra.position.add(arrow.velocity.scale(dt));
-                if (tra.position.y >= -0.05) {
-                    arrow.velocity = arrow.velocity.add(new Vector3(0, -Global.arrowGravity, 0).scale(dt));
-                    tra.rotation = Quaternion.FromToRotation(Vector3.Forward(), arrow.velocity.clone());
-                    let hitInfo = new RaycastHit();
-                    let hit = Physics.raycast(new Ray(lastPos, tra.position.subtract(lastPos)), hitInfo, tra.position.subtract(lastPos).length());
-                    if (hit) {
-                        //log('Arrow hit', hit, hitInfo.collider, hitInfo.distance, hitInfo.point);
+                let curPos = lastPos.add(arrow.velocity.scale(dt));
+                tra.position = curPos;
+                if (curPos.x >= 0 && curPos.x <= 16 && curPos.z >= 0 && curPos.z <= 32) {
+                    if (curPos.y >= -0.05) {
+                        arrow.velocity = arrow.velocity.add(new Vector3(0, -Global.arrowGravity, 0).scale(dt));
+                        tra.rotation = Quaternion.FromToRotation(Vector3.Forward(), arrow.velocity.clone());
+                        let hitInfo = new RaycastHit();
+                        let hit = Physics.raycast(new Ray(lastPos, curPos.subtract(lastPos)), hitInfo, curPos.subtract(lastPos).length());
+                        if (hit) {
+                            //log('Arrow hit', hit, hitInfo.collider, hitInfo.distance, hitInfo.point);
+                            arrow.state = 2;
+                            arrow.cd = 1;
+                            const ent = hitInfo.collider.entity;
+                            const target = ent.getComponentOrNull(Target);
+                            if (target) {
+                                TargetUtil.killTarget(ent);
+
+                                //Hit feedback UI
+                                Global.asHit.playOnce();
+                                MainUI.hitFeedback.visible = true;
+                                setTimeout(() => {
+                                    MainUI.hitFeedback.visible = false;
+                                }, 200);
+                            }
+                            if (Global.curRound) {
+                                Global.curRound.onArrowEndFlying(arrow);
+                            }
+                        }
+                    } else {
+                        //remove hit ground arrows
                         arrow.state = 2;
                         arrow.cd = 3;
-                        const ent = hitInfo.collider.entity;
-                        const target = ent.getComponentOrNull(Target);
-                        if (target) {
-                            TargetUtil.killTarget(ent);
-
-                            //Hit feedback UI
-                            Global.asHit.playOnce();
-                            MainUI.hitFeedback.visible = true;
-                            setTimeout(() => {
-                                MainUI.hitFeedback.visible = false;
-                            }, 200);
-                        }
                         if (Global.curRound) {
                             Global.curRound.onArrowEndFlying(arrow);
                         }
                     }
                 } else {
-                    //remove out-of-range arrows
+                    //remove out-of-range arrows immediately
                     arrow.state = 2;
-                    arrow.cd = 3;
+                    arrow.cd = 0;
                     if (Global.curRound) {
                         Global.curRound.onArrowEndFlying(arrow);
                     }
