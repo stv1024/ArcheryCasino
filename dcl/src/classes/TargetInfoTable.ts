@@ -6,7 +6,7 @@ export const TargetInfoTable: any = {};
 
 TargetInfoTable[1] = {
     name: "Rabbit",
-    min: new Vector3(2.56, 0, 11), //(1, 0, 5),
+    min: new Vector3(2.56, 0, 9), //(1, 0, 5),
     max: new Vector3(12.5, 0, 26), //(15, 0, 26),
     output: 1,
     radius: 0.45,
@@ -22,7 +22,7 @@ TargetInfoTable[1] = {
 };
 TargetInfoTable[2] = {
     name: "Pig",
-    min: new Vector3(3, 0, 11), //Vector3(1, 0, 8)
+    min: new Vector3(3, 0, 7), //Vector3(1, 0, 8)
     max: new Vector3(12, 0, 20), //Vector3(15, 0, 31)
     output: 2,
     radius: 0.7,
@@ -37,8 +37,8 @@ TargetInfoTable[2] = {
 };
 TargetInfoTable[3] = {
     name: "Bird",
-    min: new Vector3(1, 1, 12),
-    max: new Vector3(15, 9, 31),
+    min: new Vector3(1, 1, 11),
+    max: new Vector3(15, 9, 28),
     output: 3,
     radius: 0.3,
     speed: 8,
