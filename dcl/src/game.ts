@@ -42,12 +42,13 @@ function start() {
 
         var startArrowHint = new Entity('StartArrowHint');
         startArrowHint.setParent(root);
-        startArrowHint.addComponent(new Transform({ position: new Vector3(9.574, 2, 1.8), rotation: Quaternion.Euler(10, 0, 0), scale: new Vector3().setAll(0.025) }));
-        startArrowHint.addComponent(new GLTFShape('models/starthint/jiantou.gltf'));
+        startArrowHint.addComponent(new Transform({ position: new Vector3(9.574, 2, 1.8), rotation: Quaternion.Euler(10, 0, 0), scale: new Vector3().setAll(0.018) }));
+        startArrowHint.addComponent(new GLTFShape('models/starthint/jianjian.gltf'));
         var anmtr = startArrowHint.addComponent(new Animator());
-        var clip = new AnimationState('Idle');
+        var clip = new AnimationState('atk');
         anmtr.addClip(clip);
         clip.looping = true;
+        clip.reset();
         clip.play();
         Global.startArrowHint = startArrowHint;
     }
