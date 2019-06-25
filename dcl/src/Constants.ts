@@ -8,6 +8,7 @@ export const Global = {
     root: null as Entity,
     bow: null as Entity,
     startButtonHint: null as Entity,
+    startArrowHint: null as Entity,
     validZoneHint: null as Entity,
     arrowGravity: 9.8 / 3,
     CameraOffset: new Vector3(0, 1.7 + 0.72, 0),

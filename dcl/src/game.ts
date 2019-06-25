@@ -38,14 +38,18 @@ function start() {
         startButtonHint.addComponent(new Transform({ position: new Vector3(9.574, 1.071, 1.629), rotation: Quaternion.Euler(-72.4, 0, 0), scale: new Vector3(1, 0.51636, 0.34752) }));
         startButtonHint.addComponent(new BoxShape());
         startButtonHint.addComponent(emmMat);
-        // startButtonHint.addComponent(new Transform({ position: new Vector3(9.574, 1.071, 1.629), rotation: Quaternion.Euler(-72.4+90, 0, 0), scale: new Vector3(0.18, 0.12, 0.13) }));
-        // startButtonHint.addComponent(new GLTFShape('models/hintzone/anniu.gltf'));
-        // var anmtr = startButtonHint.addComponent(new Animator());
-        // var clip = new AnimationState('LOOP');
-        // anmtr.addClip(clip);
-        // clip.looping = true;
-        // clip.play();
         Global.startButtonHint = startButtonHint;
+
+        var startArrowHint = new Entity('StartArrowHint');
+        startArrowHint.setParent(root);
+        startArrowHint.addComponent(new Transform({ position: new Vector3(9.574, 2, 1.8), rotation: Quaternion.Euler(10, 0, 0), scale: new Vector3().setAll(0.025) }));
+        startArrowHint.addComponent(new GLTFShape('models/starthint/jiantou.gltf'));
+        var anmtr = startArrowHint.addComponent(new Animator());
+        var clip = new AnimationState('Idle');
+        anmtr.addClip(clip);
+        clip.looping = true;
+        clip.play();
+        Global.startArrowHint = startArrowHint;
     }
     {
         var validZoneHint = new Entity('ValidZoneHint');
@@ -161,6 +165,11 @@ function start() {
                         MainUI.refreshAll();
 
                         Global.startButtonHint.getComponent(BoxShape).visible = false;
+                        if (Global.startArrowHint) {
+                            Global.startArrowHint.removeComponent(GLTFShape);
+                            engine.removeEntity(Global.startArrowHint);
+                            Global.startArrowHint = null;
+                        }
                         Global.validZoneHint.getComponent(BoxShape).visible = true;
                         setTimeout(() => {
                             Global.validZoneHint.getComponent(BoxShape).visible = false;

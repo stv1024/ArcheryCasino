@@ -6,7 +6,7 @@ import { Target } from "../components/Target";
 import { TargetUtil } from "../utilities/TargetUtil";
 import { Global } from "../Constants";
 import { MainUI } from "../classes/MainUILayout";
-import { SpecialEffectUtil } from "../utilities/SpecialEffectUtil";
+//import { SpecialEffectUtil } from "../utilities/SpecialEffectUtil";
 
 export class ArrowUpdateSystem {
 
@@ -47,7 +47,7 @@ export class ArrowUpdateSystem {
 
                                 //Hit feedback UI
                                 Global.asHit.playOnce();
-                                SpecialEffectUtil.createHitEffect(hitInfo.point.add(new Vector3(0, 0, -0.3)), 0.1);
+                                //SpecialEffectUtil.createHitEffect(hitInfo.point.add(new Vector3(0, 0, -0.3)), 0.05);
                                 MainUI.hitFeedback.visible = true;
                                 setTimeout(() => {
                                     MainUI.hitFeedback.visible = false;
