@@ -16,11 +16,11 @@ export class Bird extends BaseAI {
             if (this.state == 0) {
                 this.direction = new Vector3(MathExtension.randomRange(-1, 1), 0, MathExtension.randomRange(-1, 1)).normalize();
                 this.state = 1;
-                this.countdown += MathExtension.randomRange(0.5, 1);
+                this.countdown += MathExtension.randomRange(2, 6);
             } else if (this.state == 1) {
                 this.state = 0;
                 AnimationUtil.playAnimationOn(this.target.animationStates, 'Idle');
-                this.countdown += MathExtension.randomRange(10, 16);
+                this.countdown += MathExtension.randomRange(2, 6);
 
                 if (Math.random() <= 0.5) {
                     Global.asPigIdle.playOnce();

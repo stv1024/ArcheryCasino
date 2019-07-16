@@ -21,10 +21,10 @@ export class Rabbit extends BaseAI {
             if (this.state == 0) {
                 this.direction = new Vector3(MathExtension.randomRange(-1, 1), 0, MathExtension.randomRange(-1, 1)).normalize();
                 this.state = 1;
-                this.countdown += MathExtension.randomRange(0.25, 0.5);
+                this.countdown += MathExtension.randomRange(4, 8);
             } else if (this.state == 1) {
                 this.state = 0;
-                this.countdown += MathExtension.randomRange(6, 12);
+                this.countdown += MathExtension.randomRange(3, 6);
             }
         }
         if (this.y >= 0) {
