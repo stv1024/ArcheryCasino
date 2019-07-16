@@ -7,13 +7,13 @@
     "name": "Stephen Zhou",
     "email": ""
   },
-  "owner": "",
+  "owner": "0x1a38ac06099D648Bb14418D61956133a3d0E1f1C",
   "scene": {
     "parcels": [
-      "-1,0",
-      "-1,1"
+      "-94,-36",
+      "-95,-36"
     ],
-    "base": "-1,0"
+    "base": "-94,-36"
   },
   "communications": {
     "type": "webrtc",

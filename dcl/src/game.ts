@@ -15,7 +15,7 @@ var followCameraContainer: Entity;
 
 function start() {
     var root = new Entity('Root');
-    root.addComponent(new Transform({ position: new Vector3(0, 0, 0), rotation: Quaternion.Euler(0, 0, 0), scale: new Vector3().setAll(1) })); //You can change the direction to fit your lands.
+    root.addComponent(new Transform({ position: new Vector3(16, 0, 0), rotation: Quaternion.Euler(0, -90, 0), scale: new Vector3().setAll(1) })); //You can change the direction to fit your lands.
     Global.root = root;
     engine.addEntity(root);
     var archeryScene = new Entity('Scene');
