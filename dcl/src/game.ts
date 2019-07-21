@@ -8,6 +8,7 @@ import { TargetManageSystem } from "./systems/TargetManageSystem";
 import { Round } from "./utilities/Rules";
 import { MainUI } from "./classes/MainUILayout";
 import { CheckValidZoneSystem } from "./systems/CheckValidZoneSystem";
+import { TransformUtil } from "./utilities/TransformUtil";
 
 var curHoldingArrow: Entity;
 var oldArrowContainer: Entity;
@@ -217,9 +218,11 @@ function start() {
                 var arrow = curHoldingArrow.getComponent(Arrow);
                 var tra = curHoldingArrow.getComponent(Transform);
 
-                var cam = Camera.instance;
-                tra.position = cam.position.clone().add(Global.CameraOffset).add(Global.arrowLocalPos.clone().rotate(cam.rotation));
-                tra.rotation = cam.rotation.clone();
+                var rootTra = Global.root.getComponent(Transform);
+                var camPos = TransformUtil.InverseTransformPoint(rootTra, Camera.instance.position);
+                var camRot = Quaternion.Inverse(rootTra.rotation).multiply(Camera.instance.rotation);
+                tra.position = camPos.add(Global.arrowLocalPos.clone().rotate(camRot));
+                tra.rotation = camRot.clone();
 
                 arrow.state = 1;
                 arrow.velocity = Vector3.Forward().rotate(tra.rotation).scale(15);

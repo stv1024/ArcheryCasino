@@ -11,7 +11,6 @@ export const Global = {
     startArrowHint: null as Entity,
     validZoneHint: null as Entity,
     arrowGravity: 9.8 / 3,
-    CameraOffset: new Vector3(0, 0, 0),
     arrowLocalPos: new Vector3(0, -0.334, 0.85),
     curRound: null as Round,
     insideValidZone: false,
