@@ -196,7 +196,7 @@ function setImageSprite(image: UIImage, spriteInfo: SpriteInfo) {
       text.hTextAlign = 'center';
       text.vTextAlign = 'center';
       text.positionX = -51;
-      text.positionY = 42;
+      text.positionY = 64;
       text.fontSize = 21;
       //text.fontFamily = "Impact, Arial";
       text.value = '0/10';
@@ -281,7 +281,7 @@ function setImageSprite(image: UIImage, spriteInfo: SpriteInfo) {
           text.vAlign = 'center';
           text.hTextAlign = 'center';
           text.positionX = 22;
-          text.positionY = 37;
+          text.positionY = 12;
           text.fontSize = 22;
           text.fontWeight = 'italic';
           text.color = Color4.FromHexString('#ffc300ff');
