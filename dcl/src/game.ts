@@ -150,7 +150,7 @@ function start() {
         const myEntity = new Entity();
         myEntity.addComponent(new Transform({ position: new Vector3(9.55, 1.1, 1.6), rotation: Quaternion.Euler(-70, 180, 0), scale: new Vector3(1.6, 0.6, 0.2) }))
         let shape = myEntity.addComponent(new BoxShape());
-        shape.visible = false;
+        shape.visible = true;
         myEntity.setParent(root);
         myEntity.addComponent(
             new OnClick(e => {
@@ -241,22 +241,8 @@ function start() {
         }
     }
     {
-        var myEntity = new Entity();
-        myEntity.setParent(root);
-        myEntity.addComponent(new Transform({ position: new Vector3(8, 6, 6), scale: new Vector3(16, 12, 1) }))
-        var shape = myEntity.addComponent(new PlaneShape());
-        shape.visible = false;
-        myEntity.addComponent(new OnClick(mouseClickFunc));
-
-        var myEntity = new Entity();
-        myEntity.setParent(root);
-        myEntity.addComponent(new Transform({ position: new Vector3(8, 12, 3), rotation: Quaternion.Euler(90, 0, 0), scale: new Vector3(16, 6, 1) }))
-        var shape = myEntity.addComponent(new PlaneShape());
-        shape.visible = false;
-        myEntity.addComponent(new OnClick(mouseClickFunc));
-
-        // const input = Input.instance;
-        // input.subscribe("BUTTON_UP", mouseClickFunc);
+        const input = Input.instance;
+        input.subscribe("BUTTON_UP", ActionButton.POINTER, false, mouseClickFunc);
     }
     {
         var audioHolder = new Entity('BGM');
